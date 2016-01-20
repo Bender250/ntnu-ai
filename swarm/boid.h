@@ -2,6 +2,7 @@
 #define BOID_H
 
 #include <QtGlobal>
+
 #include "settings.h"
 
 struct Velocity {

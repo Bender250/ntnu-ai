@@ -44,23 +44,135 @@
       </widget>
      </item>
      <item>
-      <widget class="QSlider" name="horizontalSlider">
+      <widget class="QSlider" name="individual_count">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
       </widget>
      </item>
-     <item alignment="Qt::AlignTop">
-      <widget class="QCheckBox" name="checkBox">
+     <item>
+      <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>CheckBox</string>
+        <string>Boid centering weight</string>
        </property>
       </widget>
      </item>
-     <item alignment="Qt::AlignTop">
-      <widget class="QPushButton" name="pushButton">
+     <item>
+      <widget class="QSlider" name="centering_weight">
+       <property name="minimum">
+        <number>-100</number>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>PushButton</string>
+        <string>Boid repealing weight</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSlider" name="repealing_weight">
+       <property name="minimum">
+        <number>-100</number>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Boid alignment weight</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSlider" name="alignment_weight">
+       <property name="minimum">
+        <number>-100</number>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Boid velocity limit</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSlider" name="velocity_limit">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>20</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Boid perimeter size</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSlider" name="perimeter_size">
+       <property name="maximum">
+        <number>400</number>
+       </property>
+       <property name="singleStep">
+        <number>5</number>
+       </property>
+       <property name="pageStep">
+        <number>50</number>
+       </property>
+       <property name="value">
+        <number>70</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Simulation speed</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSlider" name="simulation_speed">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>10</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </widget>
      </item>

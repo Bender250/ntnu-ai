@@ -1,6 +1,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include <cmath>
 
 //singleton settings
 class Settings {
@@ -16,6 +17,11 @@ class Settings {
     double _vel_limit;
 
     double _boid_perimeter;
+
+    double _sim_speed;
+
+    int _indiv_count;
+
 public:
     static Settings* inst() {
         if (!instance) {
@@ -73,6 +79,27 @@ public:
     {
         _boid_perimeter = boid_perimeter;
     }
+
+    double sim_speed() const
+    {
+        return _sim_speed;
+    }
+
+    void setSim_speed(double sim_speed)
+    {
+        _sim_speed = sim_speed;
+    }
+
+    double indiv_count() const
+    {
+        return _indiv_count;
+    }
+
+    void setIndiv_count(double indiv_count)
+    {
+        _indiv_count = indiv_count;
+    }
 };
 
 #endif // SETTINGS_H
+
