@@ -23,7 +23,7 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>990</x>
+      <x>1020</x>
       <y>0</y>
       <width>201</width>
       <height>581</height>
@@ -178,7 +178,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="widget" native="true">
+   <widget class="QWidget" name="swarm_world" native="true">
     <property name="geometry">
      <rect>
       <x>-1</x>
