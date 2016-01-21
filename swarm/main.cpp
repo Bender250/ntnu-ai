@@ -10,5 +10,8 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    return a.exec();
+    //return a.exec();
+    int ret = a.exec();
+    Settings::inst()->print_to_file("initial.txt");
+    return ret;
 }

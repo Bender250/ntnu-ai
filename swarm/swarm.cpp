@@ -37,7 +37,7 @@ Position Swarm::get_avg_pos() const
         avg = avg + b.pos();
     }
     return Position {(qint64) (avg.x / _boids.size()),
-                     (qint64) (avg.y / _boids.size())};
+                     (qint64) (avg.y / _boids.size())} % Settings::inst()->world_size();
 }
 
 Velocity Swarm::avoid_neighbours(const Boid& curr) const

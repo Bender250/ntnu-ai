@@ -2,6 +2,8 @@
 #define SETTINGS_H
 
 #include <cmath>
+#include <iostream>
+#include <fstream>
 
 //singleton settings
 class Settings {
@@ -10,17 +12,19 @@ class Settings {
     Settings& operator =(const Settings&);
     static Settings* instance;
 
-    double _weight_first;
-    double _weight_second;
-    double _weight_third;
+    double _weight_first = 1;
+    double _weight_second = 1;
+    double _weight_third = 1;
 
-    double _vel_limit;
+    double _vel_limit = 20;
 
-    double _boid_perimeter;
+    double _boid_perimeter = 50;
 
     double _sim_speed;
 
-    int _indiv_count;
+    int _indiv_count = 20;
+
+    size_t _world_size = 1024;
 
 public:
     static Settings* inst() {
@@ -28,6 +32,20 @@ public:
             instance = new Settings;
         }
         return instance;
+    }
+
+    void print_to_file(const std::string& filename) const
+    {
+        std::ofstream file;
+        file.open(filename);
+        file << "Boid settings:" << std::endl;
+        file << "Weight to center: " << _weight_first << std::endl;
+        file << "Weight of repealing: " << _weight_second << std::endl;
+        file << "Weight of alignment: " << _weight_third << std::endl;
+        file << "Velocity limit: " << _vel_limit << std::endl;
+        file << "Boid perimeter: " << _boid_perimeter << std::endl;
+        file << "Sim speed: " << _sim_speed << std::endl;
+
     }
 
     double weight_first() const
@@ -99,7 +117,19 @@ public:
     {
         _indiv_count = indiv_count;
     }
+
+    size_t world_size() const
+    {
+        return _world_size;
+    }
+
+    void setWorld_size(const size_t &world_size)
+    {
+        _world_size = world_size;
+    }
 };
 
 #endif // SETTINGS_H
+
+
 

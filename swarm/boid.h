@@ -2,6 +2,7 @@
 #define BOID_H
 
 #include <QtGlobal>
+#include <cmath>
 
 #include "settings.h"
 
@@ -48,8 +49,8 @@ struct Position {
         return (a.x == x && a.y == y);
     }
 
-    Position operator %(const Position& a) const {
-        return Position(a.x % 1024, a.y % 1024);
+    Position operator %(const int mod) const {
+        return Position(x % mod, y % mod);
     }
 };
 

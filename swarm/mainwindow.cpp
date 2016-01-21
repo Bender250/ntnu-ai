@@ -6,7 +6,6 @@ static const unsigned int frac = 25;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
-  //, _swarm_world(this)
 {
     ui->setupUi(this);
 

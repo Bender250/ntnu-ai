@@ -33,7 +33,7 @@ private:
     Velocity avoid_neighbours(const Boid& curr) const;
 
     void add_boid();
-    void paint_boid(const Boid b, QPainter& p) const;
+    void paint_boid(const Boid& b, QPainter& p) const;
 
 public:
     explicit Swarm(QWidget *parent = 0);
