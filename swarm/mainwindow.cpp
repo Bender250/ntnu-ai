@@ -9,7 +9,12 @@ MainWindow::MainWindow(QWidget *parent) :
   //, _swarm_world(this)
 {
     ui->setupUi(this);
-    //setCentralWidget(&_swarm_world); not this way
+
+    QPalette Pal(palette());
+    Pal.setColor(QPalette::Background, Qt::white);
+    ui->swarm_world->setAutoFillBackground(true);
+    ui->swarm_world->setPalette(Pal);
+    ui->swarm_world->show();
 }
 
 MainWindow::~MainWindow()

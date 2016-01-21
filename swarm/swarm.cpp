@@ -29,6 +29,9 @@ void Swarm::move_other()
 //time to do the distance
 Position Swarm::get_avg_pos() const
 {
+    if (_boids.empty()) {
+        return Position {0, 0};
+    }
     Position avg {0, 0};
     for (const Boid& b : _boids) {
         avg = avg + b.pos();
@@ -37,7 +40,7 @@ Position Swarm::get_avg_pos() const
                      (qint64) (avg.y / _boids.size())};
 }
 
-Velocity Swarm::avoid_neighbours(const Boid curr) const
+Velocity Swarm::avoid_neighbours(const Boid& curr) const
 {
     Velocity vel {0, 0};
 
@@ -55,7 +58,7 @@ Velocity Swarm::avoid_neighbours(const Boid curr) const
     return vel;
 }
 
-Velocity Swarm::get_neighbours_avg_vel(const Boid curr) const
+Velocity Swarm::get_neighbours_avg_vel(const Boid& curr) const
 {
     Velocity vel {0, 0};
 
@@ -86,22 +89,25 @@ void Swarm::add_boid()
     _boids.push_back(Boid(p, v));
 }
 
-void Swarm::paint_boid(const Boid b, QPainter &p) const
+void Swarm::paint_boid(const Boid& b, QPainter& p) const
 {
-    p.drawEllipse(QPoint(b.pos().x, b.pos().y), 5, 5);
+    p.drawEllipse(b.pos().x, b.pos().y, 5, 5);
     p.drawLine(b.pos().x, b.pos().y,
-               (int) b.pos().x + b.vel().x, (int) b.pos().y + b.vel().y);
+               (int) b.pos().x + b.vel().x + 5, (int) b.pos().y + b.vel().y + 5);
 }
 
 Swarm::Swarm(QWidget *parent) : QWidget(parent),
-    _randomness_source(seed), _timer(this), _p(this)
+    _randomness_source(seed), _timer(this)
 {
     connect(&_timer, SIGNAL(timeout()), this, SLOT(update()));
-    _timer.start(20);
+    _timer.start(1000);
 }
 
-void Swarm::paintEvent()
+void Swarm::paintEvent(QPaintEvent *)
 {
+    QPainter p(this);
+    p.setPen(Qt::black);
+
     while (Settings::inst()->indiv_count() != _boids.size()) {
         if (Settings::inst()->indiv_count() > _boids.size()) {
             add_boid();
@@ -112,9 +118,7 @@ void Swarm::paintEvent()
 
     move_all_boids_to_new_positions();
     for (const Boid& b : _boids) {
-        paint_boid(b, _p);
+        paint_boid(b, p);
     }
-    qDebug() << "Painting boids count: " << _boids.size();
-    puts("here");
     update();
 }

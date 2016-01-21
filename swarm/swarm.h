@@ -22,22 +22,22 @@ private:
     // auxiliary variables
     std::mt19937 _randomness_source;
     QTimer _timer;
-    QPainter _p;
+    //QPainter _p;
 
     void move_all_boids_to_new_positions();
     void move_boids();
     void move_other();
 
     Position get_avg_pos() const;
-    Velocity get_neighbours_avg_vel(const Boid curr) const;
-    Velocity avoid_neighbours(const Boid curr) const;
+    Velocity get_neighbours_avg_vel(const Boid& curr) const;
+    Velocity avoid_neighbours(const Boid& curr) const;
 
     void add_boid();
-    void paint_boid(const Boid b, QPainter &p) const;
+    void paint_boid(const Boid b, QPainter& p) const;
 
 public:
     explicit Swarm(QWidget *parent = 0);
-    void paintEvent();
+    void paintEvent(QPaintEvent *);
 
 
 signals:
