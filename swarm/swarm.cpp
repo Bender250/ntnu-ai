@@ -92,7 +92,7 @@ void Swarm::add_boid()
 
 void Swarm::paint_boid(const Boid& b, QPainter& p) const
 {
-    p.drawEllipse((b.pos()-QPointF(-2.5, -2.5)), 5, 5); //Warning: may came out of screen
+    p.drawEllipse(b.pos(), 5, 5); //Warning: may came out of screen
     p.drawLine(b.pos(), (b.pos() + QPointF(5, 5)) + b.vel().toPointF());
 }
 
