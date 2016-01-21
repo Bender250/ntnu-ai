@@ -38,7 +38,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    Swarm _swarm_world;
+    //Swarm _swarm_world;
 };
 
 #endif // MAINWINDOW_H

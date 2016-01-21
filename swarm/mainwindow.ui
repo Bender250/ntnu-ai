@@ -178,7 +178,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="Swarm" native="true">
+   <widget class="Swarm" name="swarm_world" native="true">
     <property name="geometry">
      <rect>
       <x>-1</x>
@@ -221,6 +221,14 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>Swarm</class>
+   <extends>QWidget</extends>
+   <header>swarm.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
