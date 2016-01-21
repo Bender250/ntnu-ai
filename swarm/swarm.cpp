@@ -116,9 +116,11 @@ void Swarm::paintEvent(QPaintEvent *)
         }
     }
 
+    _timer.setInterval(Settings::inst()->sim_speed());
+
+
     move_all_boids_to_new_positions();
     for (const Boid& b : _boids) {
         paint_boid(b, p);
     }
-    //update();
 }
