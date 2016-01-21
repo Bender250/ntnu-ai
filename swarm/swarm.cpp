@@ -99,8 +99,8 @@ void Swarm::paint_boid(const Boid& b, QPainter& p) const
 Swarm::Swarm(QWidget *parent) : QWidget(parent),
     _randomness_source(seed), _timer(this)
 {
+    _timer.start(20);
     connect(&_timer, SIGNAL(timeout()), this, SLOT(update()));
-    _timer.start(1000);
 }
 
 void Swarm::paintEvent(QPaintEvent *)
@@ -120,5 +120,5 @@ void Swarm::paintEvent(QPaintEvent *)
     for (const Boid& b : _boids) {
         paint_boid(b, p);
     }
-    update();
+    //update();
 }
