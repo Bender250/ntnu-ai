@@ -36,8 +36,7 @@ Position Swarm::get_avg_pos() const
     for (const Boid& b : _boids) {
         avg = avg + b.pos();
     }
-    return Position {(qint64) (avg.x / _boids.size()),
-                     (qint64) (avg.y / _boids.size())} % Settings::inst()->world_size();
+    return avg / _boids.size(); //TODO: maybe, we go out of the world here
 }
 
 Velocity Swarm::avoid_neighbours(const Boid& curr) const
@@ -48,10 +47,11 @@ Velocity Swarm::avoid_neighbours(const Boid& curr) const
         // omited around pseudocode if (b != curr), because it does nothing
 
         // if b is in curr perimeter
-        const Velocity dist = b.pos() - curr.pos();
-        const double d = dist.x * dist.x + dist.y + dist.y;
-        if (d < Settings::inst()->boid_perimeter()*Settings::inst()->boid_perimeter()) {
-            vel = vel + dist; //TODO maybe - (can be tested with negative multiple
+        const Velocity dist {b.pos().x() - curr.pos().x(),
+                             b.pos().y() - curr.pos().y()};
+
+        if (dist.length() < Settings::inst()->boid_perimeter()) {
+            vel = vel - dist; //TODO maybe - (can be tested with negative multiple)
         }
     }
 
@@ -66,34 +66,34 @@ Velocity Swarm::get_neighbours_avg_vel(const Boid& curr) const
         // omited around pseudocode if (b != curr), because it does almost nothing
 
         // if b is in curr perimeter
-        const Velocity dist = b.pos() - curr.pos();
-        const double d = dist.x * dist.x + dist.y + dist.y;
-        if (d < Settings::inst()->boid_perimeter()*Settings::inst()->boid_perimeter()) {
+        const Velocity dist {b.pos().x() - curr.pos().x(),
+                             b.pos().y() - curr.pos().y()};
+
+        if (dist.length() < Settings::inst()->boid_perimeter()) {
             vel = vel + b.vel();
         }
     }
 
-    return Velocity {vel.x / _boids.size(), vel.y / _boids.size()};
+    return vel / _boids.size();
 }
 
 void Swarm::add_boid()
 {
-    std::uniform_int_distribution<int>
-            rnd_int(0, 1023);
-    Position p {rnd_int(_randomness_source), rnd_int(_randomness_source)};
-
     std::uniform_real_distribution<double>
-            rnd_double(0.0, Settings::inst()->vel_limit());
-    Velocity v {rnd_double(_randomness_source), rnd_double(_randomness_source)};
+            rnd_double(0, 1023);
+    Position p {rnd_double(_randomness_source), rnd_double(_randomness_source)};
+
+    std::uniform_real_distribution<float>
+            rnd_float(0.0, Settings::inst()->vel_limit());
+    Velocity v {rnd_float(_randomness_source), rnd_float(_randomness_source)};
 
     _boids.push_back(Boid(p, v));
 }
 
 void Swarm::paint_boid(const Boid& b, QPainter& p) const
 {
-    p.drawEllipse(b.pos().x, b.pos().y, 5, 5);
-    p.drawLine(b.pos().x, b.pos().y,
-               (int) b.pos().x + b.vel().x + 5, (int) b.pos().y + b.vel().y + 5);
+    p.drawEllipse((b.pos()-QPointF(-2.5, -2.5)), 5, 5); //Warning: may came out of screen
+    p.drawLine(b.pos(), (b.pos() + QPointF(5, 5)) + b.vel().toPointF());
 }
 
 Swarm::Swarm(QWidget *parent) : QWidget(parent),

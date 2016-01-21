@@ -2,11 +2,15 @@
 #define BOID_H
 
 #include <QtGlobal>
+#include <QVector2D>
+#include <QPointF>
 #include <cmath>
 
 #include "settings.h"
 
-struct Velocity {
+typedef QVector2D Velocity;
+
+/*struct Velocity {
     Velocity(const double set_x = 0,const double  set_y = 0)
         : x(set_x), y(set_y) { }
     double x, y;
@@ -18,9 +22,11 @@ struct Velocity {
     Velocity operator *(const double w) const {
         return Velocity(x * w, y * w);
     }
-};
+};*/
 
-struct Position {
+typedef QPointF Position;
+
+/*struct Position {
     Position(const qint64 set_x = 0, const qint64 set_y = 0)
         : x(set_x), y(set_y) { }
 
@@ -31,9 +37,9 @@ struct Position {
         return Position(a.x+x, a.y+y);
     }
 
-    /*Position operator -(const Position& a) {
-        return Position(a.x-x, a.y-y);
-    }*/
+    //Position operator -(const Position& a) {
+    //    return Position(a.x-x, a.y-y);
+    //}
 
     //enable sum of position with velocity (for move)
     Position operator +(const Velocity& a) const {
@@ -52,13 +58,22 @@ struct Position {
     Position operator %(const int mod) const {
         return Position(x % mod, y % mod);
     }
-};
+};*/
 
 class Boid
 {
 private:
     Position _pos;
     Velocity _vel;
+
+    double my_mod(double a, const size_t& m) const
+    {
+        a = std::fmod(a, m);
+        if (a < 0) {
+            a += m;
+        }
+        return a;
+    }
 
 public:
     Boid() : _pos(Position()), _vel(Velocity()) { }

@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-static const unsigned int frac = 25;
+static const double frac = 10.0;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
