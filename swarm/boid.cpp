@@ -30,5 +30,5 @@ void Boid::move_boid_to_new_position(const Position &first_pos,
     _vel = _vel + first  * Settings::inst()->weight_first()
                 + second * Settings::inst()->weight_second()
                 + third  * Settings::inst()->weight_third();
-    _pos = _pos + _vel;
+    _pos = (_pos + _vel) % 1024;
 }

@@ -178,7 +178,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="swarm_world" native="true">
+   <widget class="QWidget" name="Swarm" native="true">
     <property name="geometry">
      <rect>
       <x>-1</x>

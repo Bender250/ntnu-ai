@@ -4,6 +4,9 @@
 #include <QWidget>
 #include <vector>
 #include <random>
+#include <QPainter>
+#include <QTimer>
+#include <QDebug>
 
 #include "boid.h"
 
@@ -18,6 +21,8 @@ private:
 
     // auxiliary variables
     std::mt19937 _randomness_source;
+    QTimer _timer;
+    QPainter _p;
 
     void move_all_boids_to_new_positions();
     void move_boids();
@@ -28,9 +33,11 @@ private:
     Velocity avoid_neighbours(const Boid curr) const;
 
     void add_boid();
+    void paint_boid(const Boid b, QPainter &p) const;
 
 public:
     explicit Swarm(QWidget *parent = 0);
+    void paintEvent();
 
 
 signals:

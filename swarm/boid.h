@@ -47,6 +47,10 @@ struct Position {
     bool operator ==(const Position& a) const {
         return (a.x == x && a.y == y);
     }
+
+    Position operator %(const Position& a) const {
+        return Position(a.x % 1024, a.y % 1024);
+    }
 };
 
 class Boid

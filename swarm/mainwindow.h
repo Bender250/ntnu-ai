@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include "settings.h"
+#include "swarm.h"
 
 namespace Ui {
 class MainWindow;
@@ -33,8 +34,11 @@ private slots:
 
     void on_simulation_speed_sliderMoved(int position);
 
+    //void start_simulation();
+
 private:
     Ui::MainWindow *ui;
+    Swarm _swarm_world;
 };
 
 #endif // MAINWINDOW_H

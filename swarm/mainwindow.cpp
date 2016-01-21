@@ -5,9 +5,11 @@ static const unsigned int frac = 25;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    _swarm_world(this)
 {
     ui->setupUi(this);
+    //setCentralWidget(&_swarm_world); not this way
 }
 
 MainWindow::~MainWindow()
@@ -17,16 +19,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_individual_count_sliderMoved(int position)
 {
-    /*
-     * for now, leave commented
-    while (Settings::inst()->indiv_count() != position) {
-        if (Settings::inst()->indiv_count() > position) {
-            // TODO remove boid
-        }
-        else {
-            // TODO add boid
-        }
-    }*/
+    Settings::inst()->setIndiv_count(position);
 }
 
 void MainWindow::on_centering_weight_sliderMoved(int position)
