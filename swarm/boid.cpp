@@ -25,8 +25,8 @@ void Boid::move_boid_to_new_position(const Position &first_pos,
                                      const Velocity &second,
                                      const Velocity &third)
 {
-    const Velocity first {first_pos.x() - _pos.x(),
-                          first_pos.y() - _pos.y()};
+    const Velocity first {(float) (first_pos.x() - _pos.x()),
+                          (float) (first_pos.y() - _pos.y())};
 
     _vel = _vel + first  * Settings::inst()->weight_first() * (0.01)
                 + second * Settings::inst()->weight_second()

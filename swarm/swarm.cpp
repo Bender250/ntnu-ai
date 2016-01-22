@@ -47,8 +47,8 @@ Velocity Swarm::avoid_neighbours(const Boid& curr) const
         // omited around pseudocode if (b != curr), because it does nothing
 
         // if b is in curr perimeter
-        const Velocity dist {b.pos().x() - curr.pos().x(),
-                             b.pos().y() - curr.pos().y()};
+        const Velocity dist {(float) (b.pos().x() - curr.pos().x()),
+                             (float) (b.pos().y() - curr.pos().y())};
 
         if (dist.length() < Settings::inst()->boid_perimeter()) {
             vel = vel - dist; //TODO maybe - (can be tested with negative multiple)
@@ -66,8 +66,8 @@ Velocity Swarm::get_neighbours_avg_vel(const Boid& curr) const
         // omited around pseudocode if (b != curr), because it does almost nothing
 
         // if b is in curr perimeter
-        const Velocity dist {b.pos().x() - curr.pos().x(),
-                             b.pos().y() - curr.pos().y()};
+        const Velocity dist {(float) (b.pos().x() - curr.pos().x()),
+                             (float) (b.pos().y() - curr.pos().y())};
 
         if (dist.length() < Settings::inst()->boid_perimeter()) {
             vel = vel + b.vel();
@@ -93,7 +93,7 @@ void Swarm::add_boid()
 void Swarm::paint_boid(const Boid& b, QPainter& p) const
 {
     p.drawEllipse(b.pos(), 5, 5); //Warning: may came out of screen
-    p.drawLine(b.pos(), (b.pos() + QPointF(5, 5)) + b.vel().toPointF());
+    p.drawLine(b.pos(), b.pos() + QPointF(5, 5) + b.vel().toPointF());
 }
 
 Swarm::Swarm(QWidget *parent) : QWidget(parent),

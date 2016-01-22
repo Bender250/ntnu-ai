@@ -20,7 +20,7 @@ class Settings {
 
     double _boid_perimeter = 50;
 
-    double _sim_speed;
+    double _sim_speed = 20;
 
     int _indiv_count = 20;
 
