@@ -49,9 +49,14 @@ void MainWindow::on_velocity_limit_sliderMoved(int position)
     Settings::inst()->setVel_limit(position);
 }
 
-void MainWindow::on_perimeter_size_sliderMoved(int position)
+void MainWindow::on_repealing_perimeter_sliderMoved(int position)
 {
-    Settings::inst()->setBoid_perimeter(position);
+    Settings::inst()->setRepealing_perimeter(position);
+}
+
+void MainWindow::on_alignment_perimeter_sliderMoved(int position)
+{
+    Settings::inst()->setAlignment_perimeter(position);
 }
 
 void MainWindow::on_simulation_speed_sliderMoved(int position)

@@ -30,11 +30,13 @@ private slots:
 
     void on_velocity_limit_sliderMoved(int position);
 
-    void on_perimeter_size_sliderMoved(int position);
+    void on_repealing_perimeter_sliderMoved(int position);
 
     void on_simulation_speed_sliderMoved(int position);
 
     //void start_simulation();
+
+    void on_alignment_perimeter_sliderMoved(int position);
 
 private:
     Ui::MainWindow *ui;

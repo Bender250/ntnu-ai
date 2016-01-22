@@ -50,7 +50,7 @@ Velocity Swarm::avoid_neighbours(const Boid& curr) const
         const Velocity dist {(float) (b.pos().x() - curr.pos().x()),
                              (float) (b.pos().y() - curr.pos().y())};
 
-        if (dist.length() < Settings::inst()->boid_perimeter()) {
+        if (dist.length() < Settings::inst()->repealing_perimeter()) {
             vel = vel - dist; //TODO maybe - (can be tested with negative multiple)
         }
     }
@@ -69,7 +69,7 @@ Velocity Swarm::get_neighbours_avg_vel(const Boid& curr) const
         const Velocity dist {(float) (b.pos().x() - curr.pos().x()),
                              (float) (b.pos().y() - curr.pos().y())};
 
-        if (dist.length() < Settings::inst()->boid_perimeter()) {
+        if (dist.length() < Settings::inst()->alignment_perimeter()) {
             vel = vel + b.vel();
         }
     }

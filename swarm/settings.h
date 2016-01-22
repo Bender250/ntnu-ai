@@ -12,13 +12,14 @@ class Settings {
     Settings& operator =(const Settings&);
     static Settings* instance;
 
-    double _weight_first = 1;
-    double _weight_second = 1;
-    double _weight_third = 1;
+    double _centering_weight = 1;
+    double _repealing_weight = 1;
+    double _alignment_weight = 1;
+
+    double _repealing_perimeter = 70;
+    double _alignment_perimeter = 70;
 
     double _vel_limit = 20;
-
-    double _boid_perimeter = 50;
 
     double _sim_speed = 20;
 
@@ -39,43 +40,43 @@ public:
         std::ofstream file;
         file.open(filename);
         file << "Boid settings:" << std::endl;
-        file << "Weight to center: " << _weight_first << std::endl;
-        file << "Weight of repealing: " << _weight_second << std::endl;
-        file << "Weight of alignment: " << _weight_third << std::endl;
+        file << "Weight to center: " << _centering_weight << std::endl;
+        file << "Weight of repealing: " << _repealing_weight << std::endl;
+        file << "Weight of alignment: " << _alignment_weight << std::endl;
         file << "Velocity limit: " << _vel_limit << std::endl;
-        file << "Boid perimeter: " << _boid_perimeter << std::endl;
+        file << "Boid perimeter: " << _repealing_perimeter << std::endl;
         file << "Sim speed: " << _sim_speed << std::endl;
 
     }
 
     double weight_first() const
     {
-        return _weight_first;
+        return _centering_weight;
     }
 
     void setWeight_first(double weight_first)
     {
-        _weight_first = weight_first;
+        _centering_weight = weight_first;
     }
 
     double weight_second() const
     {
-        return _weight_second;
+        return _repealing_weight;
     }
 
     void setWeight_second(double weight_second)
     {
-        _weight_second = weight_second;
+        _repealing_weight = weight_second;
     }
 
     double weight_third() const
     {
-        return _weight_third;
+        return _alignment_weight;
     }
 
     void setWeight_third(double weight_third)
     {
-        _weight_third = weight_third;
+        _alignment_weight = weight_third;
     }
 
     double vel_limit() const
@@ -88,14 +89,24 @@ public:
         _vel_limit = vel_limit;
     }
 
-    double boid_perimeter() const
+    double repealing_perimeter() const
     {
-        return _boid_perimeter;
+        return _repealing_perimeter;
     }
 
-    void setBoid_perimeter(double boid_perimeter)
+    void setRepealing_perimeter(double boid_perimeter)
     {
-        _boid_perimeter = boid_perimeter;
+        _repealing_perimeter = boid_perimeter;
+    }
+
+    double alignment_perimeter() const
+    {
+        return _alignment_perimeter;
+    }
+
+    void setAlignment_perimeter(double alignment_perimeter)
+    {
+        _alignment_perimeter = alignment_perimeter;
     }
 
     double sim_speed() const
@@ -130,6 +141,5 @@ public:
 };
 
 #endif // SETTINGS_H
-
 
 
