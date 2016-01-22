@@ -25,8 +25,7 @@ void Swarm::move_other()
 
 }
 
-//TODO the speed must be multiplied by low factor (so it take some
-//time to do the distance
+//TODO get only center from some area
 Position Swarm::get_avg_pos() const
 {
     if (_boids.empty()) {
@@ -46,12 +45,12 @@ Velocity Swarm::avoid_neighbours(const Boid& curr) const
     for (const Boid& b : _boids) {
         // omited around pseudocode if (b != curr), because it does nothing
 
-        // if b is in curr perimeter
-        const Velocity dist {(float) (b.pos().x() - curr.pos().x()),
-                             (float) (b.pos().y() - curr.pos().y())};
+        const double dist = curr.get_distance(b);
 
-        if (dist.length() < Settings::inst()->repealing_perimeter()) {
-            vel = vel - dist; //TODO maybe - (can be tested with negative multiple)
+        if (dist < Settings::inst()->repealing_perimeter()) {
+            const Velocity diff {(float) (b.pos().x() - curr.pos().x()),
+                                 (float) (b.pos().y() - curr.pos().y())};
+            vel = vel - diff; //TODO maybe - (can be tested with negative multiple)
         }
     }
 
@@ -65,11 +64,9 @@ Velocity Swarm::get_neighbours_avg_vel(const Boid& curr) const
     for (const Boid& b : _boids) {
         // omited around pseudocode if (b != curr), because it does almost nothing
 
-        // if b is in curr perimeter
-        const Velocity dist {(float) (b.pos().x() - curr.pos().x()),
-                             (float) (b.pos().y() - curr.pos().y())};
+        const double dist = curr.get_distance(b);
 
-        if (dist.length() < Settings::inst()->alignment_perimeter()) {
+        if (dist < Settings::inst()->alignment_perimeter()) {
             vel = vel + b.vel();
         }
     }

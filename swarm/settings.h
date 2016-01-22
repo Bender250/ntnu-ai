@@ -42,9 +42,10 @@ public:
         file << "Boid settings:" << std::endl;
         file << "Weight to center: " << _centering_weight << std::endl;
         file << "Weight of repealing: " << _repealing_weight << std::endl;
+        file << "Repealing perimeter: " << _repealing_perimeter << std::endl;
         file << "Weight of alignment: " << _alignment_weight << std::endl;
+        file << "Alignment perimeter: " << _alignment_perimeter << std::endl;
         file << "Velocity limit: " << _vel_limit << std::endl;
-        file << "Boid perimeter: " << _repealing_perimeter << std::endl;
         file << "Sim speed: " << _sim_speed << std::endl;
 
     }

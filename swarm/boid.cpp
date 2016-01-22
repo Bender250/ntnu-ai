@@ -21,6 +21,22 @@ void Boid::setVel(const Velocity &vel)
     _vel = vel;
 }
 
+double Boid::get_distance(const Boid &b) const
+{
+    const double size = Settings::inst()->world_size();
+    double dx = size;
+    dx = std::min(dx, std::abs( _pos.x()         -  b.pos().x()));
+    dx = std::min(dx, std::abs((_pos.x() + size) -  b.pos().x()));
+    dx = std::min(dx, std::abs( _pos.x()         - (b.pos().x()) + size));
+
+    double dy = size;
+    dy = std::min(dy, std::abs( _pos.y()         -  b.pos().y()));
+    dy = std::min(dy, std::abs((_pos.y() + size) -  b.pos().y()));
+    dy = std::min(dy, std::abs( _pos.y()         - (b.pos().y()) + size));
+
+    return std::sqrt(dx*dx + dy*dy);
+}
+
 void Boid::move_boid_to_new_position(const Position &first_pos,
                                      const Velocity &second,
                                      const Velocity &third)
