@@ -17,7 +17,7 @@ class Settings {
     double _alignment_weight = 1;
 
     double _repealing_perimeter = 70;
-    double _alignment_perimeter = 70;
+    double _alignment_perimeter = 250;
 
     double _vel_limit = 20;
 

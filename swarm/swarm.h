@@ -28,7 +28,7 @@ private:
     void move_boids();
     void move_other();
 
-    Position get_avg_pos() const;
+    Position get_avg_pos(const Boid &curr) const;
     Velocity get_neighbours_avg_vel(const Boid& curr) const;
     Velocity avoid_neighbours(const Boid& curr) const;
 

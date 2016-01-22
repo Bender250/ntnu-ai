@@ -9,9 +9,8 @@ void Swarm::move_all_boids_to_new_positions()
 
 void Swarm::move_boids()
 {
-    Position avg_position = get_avg_pos();
-
     for (Boid& boid : _boids) {
+        Position avg_position = get_avg_pos(boid);
         Velocity avoid_neigbours = avoid_neighbours(boid);
         Velocity neigbours_avg_velocity = get_neighbours_avg_vel(boid);
         boid.move_boid_to_new_position(avg_position,
@@ -26,16 +25,22 @@ void Swarm::move_other()
 }
 
 //TODO get only center from some area
-Position Swarm::get_avg_pos() const
+Position Swarm::get_avg_pos(const Boid& curr) const
 {
-    if (_boids.empty()) {
+    Position avg {0, 0};
+    size_t counter = 0;
+    for (const Boid& b : _boids) {
+        const double dist = curr.get_distance(b);
+
+        if (dist < Settings::inst()->alignment_perimeter()) {
+            avg = avg + b.pos();
+            ++counter;
+        }
+    }
+    if (counter == 0) {
         return Position {0, 0};
     }
-    Position avg {0, 0};
-    for (const Boid& b : _boids) {
-        avg = avg + b.pos();
-    }
-    return avg / _boids.size(); //TODO: maybe, we go out of the world here
+    return avg / counter;
 }
 
 Velocity Swarm::avoid_neighbours(const Boid& curr) const
@@ -50,7 +55,7 @@ Velocity Swarm::avoid_neighbours(const Boid& curr) const
         if (dist < Settings::inst()->repealing_perimeter()) {
             const Velocity diff {(float) (b.pos().x() - curr.pos().x()),
                                  (float) (b.pos().y() - curr.pos().y())};
-            vel = vel - diff; //TODO maybe - (can be tested with negative multiple)
+            vel = vel - (diff * (10.0/(dist+0.01))); //TODO maybe - (can be tested with negative multiple)
         }
     }
 

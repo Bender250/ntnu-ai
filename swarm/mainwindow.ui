@@ -25,7 +25,7 @@
      <rect>
       <x>1090</x>
       <y>10</y>
-      <width>201</width>
+      <width>208</width>
       <height>581</height>
      </rect>
     </property>
@@ -145,7 +145,7 @@
      <item>
       <widget class="QLabel" name="label_8">
        <property name="text">
-        <string>Alignment perimeter size</string>
+        <string>Alignment+center. per. size</string>
        </property>
       </widget>
      </item>
@@ -155,7 +155,7 @@
         <number>400</number>
        </property>
        <property name="value">
-        <number>70</number>
+        <number>250</number>
        </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
