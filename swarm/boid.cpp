@@ -21,32 +21,34 @@ void Boid::setVel(const Velocity &vel)
     _vel = vel;
 }
 
-double Boid::get_distance(const Boid &b) const
+double Boid::get_distance(const Position &p) const
 {
     const double size = Settings::inst()->world_size();
     double dx = size;
-    dx = std::min(dx, std::abs( _pos.x()         -  b.pos().x()));
-    dx = std::min(dx, std::abs((_pos.x() + size) -  b.pos().x()));
-    dx = std::min(dx, std::abs( _pos.x()         - (b.pos().x()) + size));
+    dx = std::min(dx, std::abs( _pos.x()         -  p.x()));
+    dx = std::min(dx, std::abs((_pos.x() + size) -  p.x()));
+    dx = std::min(dx, std::abs( _pos.x()         - (p.x()) + size));
 
     double dy = size;
-    dy = std::min(dy, std::abs( _pos.y()         -  b.pos().y()));
-    dy = std::min(dy, std::abs((_pos.y() + size) -  b.pos().y()));
-    dy = std::min(dy, std::abs( _pos.y()         - (b.pos().y()) + size));
+    dy = std::min(dy, std::abs( _pos.y()         -  p.y()));
+    dy = std::min(dy, std::abs((_pos.y() + size) -  p.y()));
+    dy = std::min(dy, std::abs( _pos.y()         - (p.y()) + size));
 
     return std::sqrt(dx*dx + dy*dy);
 }
 
 void Boid::move_boid_to_new_position(const Position &first_pos,
                                      const Velocity &second,
-                                     const Velocity &third)
+                                     const Velocity &third,
+                                     const Velocity &fourth)
 {
     const Velocity first {(float) (first_pos.x() - _pos.x()),
                           (float) (first_pos.y() - _pos.y())};
 
     _vel = _vel + first  * Settings::inst()->weight_first() * (0.01)
                 + second * Settings::inst()->weight_second()
-                + third  * Settings::inst()->weight_third();
+                + third  * Settings::inst()->weight_third()
+                + fourth * Settings::inst()->weight_second();
 
     if (_vel.length() > Settings::inst()->vel_limit()) {
         double multiple = Settings::inst()->vel_limit() / _vel.length();

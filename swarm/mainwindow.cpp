@@ -63,3 +63,8 @@ void MainWindow::on_simulation_speed_sliderMoved(int position)
 {
     Settings::inst()->setSim_speed(position);
 }
+
+void MainWindow::on_obsticles_count_sliderMoved(int position)
+{
+    Settings::inst()->setObsticles_count(position);
+}

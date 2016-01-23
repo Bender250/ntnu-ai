@@ -18,6 +18,7 @@ class Swarm : public QWidget
 private:
     //boids swarm
     std::vector<Boid> _boids;
+    std::vector<Position> _obsticles;
 
     // auxiliary variables
     std::mt19937 _randomness_source;
@@ -31,10 +32,13 @@ private:
     Position get_avg_pos(const Boid &curr) const;
     Velocity get_neighbours_avg_vel(const Boid& curr) const;
     Velocity avoid_neighbours(const Boid& curr) const;
+    Velocity avoid_obsticles(const Boid &curr) const;
 
     void add_boid();
     void paint_boid(const Boid& b, QPainter& p) const;
+    void paint_obsticles(QPainter &p) const;
 
+    void maintain_counts();
 public:
     explicit Swarm(QWidget *parent = 0);
     void paintEvent(QPaintEvent *);

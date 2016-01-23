@@ -23,7 +23,8 @@ class Settings {
 
     double _sim_speed = 20;
 
-    int _indiv_count = 20;
+    size_t _indiv_count = 20;
+    size_t _obsticles_count = 0;
 
     size_t _world_size = 1024;
 
@@ -120,14 +121,24 @@ public:
         _sim_speed = sim_speed;
     }
 
-    double indiv_count() const
+    size_t indiv_count() const
     {
         return _indiv_count;
     }
 
-    void setIndiv_count(double indiv_count)
+    void setIndiv_count(size_t indiv_count)
     {
         _indiv_count = indiv_count;
+    }
+
+    size_t obsticles_count() const
+    {
+        return _obsticles_count;
+    }
+
+    void setObsticles_count(size_t obsticles_count)
+    {
+        _obsticles_count = obsticles_count;
     }
 
     size_t world_size() const
