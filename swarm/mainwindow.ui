@@ -77,9 +77,29 @@
       </widget>
      </item>
      <item>
+      <widget class="QLabel" name="label_10">
+       <property name="text">
+        <string>Predators count</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSlider" name="predators_count">
+       <property name="maximum">
+        <number>5</number>
+       </property>
+       <property name="pageStep">
+        <number>2</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Boid centering weight</string>
+        <string>Boid cohesion weight</string>
        </property>
       </widget>
      </item>
@@ -99,7 +119,7 @@
      <item>
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Boid repealing weight</string>
+        <string>Boid separation weight</string>
        </property>
       </widget>
      </item>
@@ -119,7 +139,7 @@
      <item>
       <widget class="QLabel" name="label_6">
        <property name="text">
-        <string>Repealing perimeter size</string>
+        <string>Separation perimeter size</string>
        </property>
       </widget>
      </item>
@@ -165,7 +185,7 @@
      <item>
       <widget class="QLabel" name="label_8">
        <property name="text">
-        <string>Alignment+center. per. size</string>
+        <string>Alignment+cohes. per. size</string>
        </property>
       </widget>
      </item>

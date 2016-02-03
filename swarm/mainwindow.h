@@ -40,6 +40,8 @@ private slots:
 
     void on_obsticles_count_sliderMoved(int position);
 
+    void on_predators_count_sliderMoved(int position);
+
 private:
     Ui::MainWindow *ui;
     //Swarm _swarm_world;

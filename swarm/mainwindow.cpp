@@ -68,3 +68,8 @@ void MainWindow::on_obsticles_count_sliderMoved(int position)
 {
     Settings::inst()->setObsticles_count(position);
 }
+
+void MainWindow::on_predators_count_sliderMoved(int position)
+{
+    Settings::inst()->setPredators_count(position);
+}

@@ -14,7 +14,7 @@ typedef QPointF Position;
 
 class Boid
 {
-private:
+protected:
     Position _pos;
     Velocity _vel;
 
@@ -30,16 +30,24 @@ private:
 public:
     Boid() : _pos(Position()), _vel(Velocity()) { }
     Boid(Position p, Velocity v) : _pos(p), _vel(v) { }
-    void move_boid_to_new_position(const Position& first_pos,
-                                   const Velocity& second,
-                                   const Velocity& third,
-                                   const Velocity &fourth);
+    void move_to_new_position(const Velocity &first,
+                              const Velocity &second,
+                              const Velocity &third,
+                              const Velocity &fourth);
 
     Position pos() const;
-    void setPos(const Position &pos);
     Velocity vel() const;
-    void setVel(const Velocity &vel);
-    double get_distance(const Position &b) const;
+    Velocity get_distance(const Position &b) const;
+};
+
+class Predator : public Boid
+{
+public:
+    Predator(Position p, Velocity v) : Boid(p, v) {}
+
+    void move_to_new_position(const Velocity &farther,
+                              const Velocity &closer,
+                              const Velocity &avoid_obsticles);
 };
 
 #endif // BOID_H

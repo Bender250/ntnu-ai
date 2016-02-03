@@ -25,6 +25,7 @@ class Settings {
 
     size_t _indiv_count = 20;
     size_t _obsticles_count = 0;
+    size_t _predators_count = 0;
 
     size_t _world_size = 1024;
 
@@ -150,8 +151,17 @@ public:
     {
         _world_size = world_size;
     }
+
+    size_t predators_count() const
+    {
+        return _predators_count;
+    }
+
+    void setPredators_count(const size_t &predators_count)
+    {
+        _predators_count = predators_count;
+    }
 };
 
 #endif // SETTINGS_H
-
 

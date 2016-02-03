@@ -4,45 +4,53 @@
 void Swarm::move_all_boids_to_new_positions()
 {
     move_boids();
-    move_other();
+    move_predators();
 }
 
 void Swarm::move_boids()
 {
     for (Boid& boid : _boids) {
-        Position avg_position = get_avg_pos(boid);
+        Velocity cohesion = vel_to_avg_pos(boid, Settings::inst()->alignment_perimeter());
         Velocity avoid_neigbours = avoid_neighbours(boid);
         Velocity neigbours_avg_velocity = get_neighbours_avg_vel(boid);
-        Velocity avoid_obs = avoid_obsticles(boid);
-        boid.move_boid_to_new_position(avg_position,
-                                       avoid_neigbours,
-                                       neigbours_avg_velocity,
-                                       avoid_obs);
+        Velocity avoid = avoid_obsticles(boid) + avoid_predators(boid);
+        boid.move_to_new_position(cohesion,
+                                  avoid_neigbours,
+                                  neigbours_avg_velocity,
+                                  avoid);
     }
 }
 
-void Swarm::move_other()
+void Swarm::move_predators()
 {
+    for (Predator& pred : _predators) {
+        Velocity farther = vel_to_avg_pos(pred, Settings::inst()->alignment_perimeter() * 2);
+        Velocity closer = pred.get_distance(get_closest_boid(pred)) * (-5);
+        Velocity avoid_obst = avoid_obsticles(pred);
 
+        pred.move_to_new_position(farther, closer, avoid_obst);
+        kill_birds(pred);
+    }
 }
 
-//TODO get only center from some area
-Position Swarm::get_avg_pos(const Boid& curr) const
+Velocity Swarm::vel_to_avg_pos(const Boid &curr, const double &max_dist) const
 {
     Position avg {0, 0};
     size_t counter = 0;
     for (const Boid& b : _boids) {
-        const double dist = curr.get_distance(b.pos());
+        const Velocity dist = curr.get_distance(b.pos());
 
-        if (dist < Settings::inst()->alignment_perimeter()) {
+        if (dist.length() < max_dist) {
             avg = avg + b.pos();
             ++counter;
         }
     }
     if (counter == 0) {
-        return Position {0, 0};
+        return Velocity {0, 0};
     }
-    return avg / counter;
+    avg = avg / counter;
+
+    return -curr.get_distance(avg); // minus, because it should be from curr to avg
 }
 
 Velocity Swarm::avoid_neighbours(const Boid& curr) const
@@ -52,12 +60,10 @@ Velocity Swarm::avoid_neighbours(const Boid& curr) const
     for (const Boid& b : _boids) {
         // omited around pseudocode if (b != curr), because it does nothing
 
-        const double dist = curr.get_distance(b.pos());
+        const Velocity dist = curr.get_distance(b.pos());
 
-        if (dist < Settings::inst()->repealing_perimeter()) {
-            const Velocity diff {(float) (b.pos().x() - curr.pos().x()),
-                                 (float) (b.pos().y() - curr.pos().y())};
-            vel = vel - (diff * (10.0/(dist+0.01))); //TODO maybe - (can be tested with negative multiple)
+        if (dist.length() < Settings::inst()->repealing_perimeter()) {
+            vel = vel + (dist * (10.0 / (dist.length() + 0.01)));
         }
     }
 
@@ -71,9 +77,9 @@ Velocity Swarm::get_neighbours_avg_vel(const Boid& curr) const
     for (const Boid& b : _boids) {
         // omited around pseudocode if (b != curr), because it does almost nothing
 
-        const double dist = curr.get_distance(b.pos());
+        const Velocity dist = curr.get_distance(b.pos());
 
-        if (dist < Settings::inst()->alignment_perimeter()) {
+        if (dist.length() < Settings::inst()->alignment_perimeter()) {
             vel = vel + b.vel();
         }
     }
@@ -87,16 +93,45 @@ Velocity Swarm::avoid_obsticles(const Boid& curr) const
 
     for (const Position& o : _obsticles) {
 
-        const double dist = curr.get_distance(o) - 5.0;
+        const Velocity dist = curr.get_distance(o);
 
-        if (dist < Settings::inst()->repealing_perimeter()) {
-            const Velocity diff {(float) (o.x() - curr.pos().x()),
-                                 (float) (o.y() - curr.pos().y())};
-            vel = vel - (diff * (200.0/(dist*dist+0.01))); //TODO maybe - (can be tested with negative multiple)
+        if ((dist.length() - 5.0) < Settings::inst()->repealing_perimeter()) {
+            vel = vel + (dist * (200.0 / (dist.length() * dist.length() + 0.01) ));
         }
     }
 
     return vel;
+}
+
+Velocity Swarm::avoid_predators(const Boid& curr) const
+{
+    Velocity vel {0, 0};
+
+    for (const Predator &p : _predators) {
+
+        const Velocity dist = curr.get_distance(p.pos());
+
+        if ((dist.length() - 5.0) < Settings::inst()->repealing_perimeter() * 2) {
+            vel = vel + (dist * (15.0 / ( dist.length() + 0.01) ));
+        }
+    }
+
+    return vel;
+}
+
+Position Swarm::get_closest_boid(const Predator &pred) const
+{
+    double dist = Settings::inst()->world_size() * 2;
+    const Boid* closest = NULL;
+
+    for (const Boid &b : _boids) {
+        if (pred.get_distance(b.pos()).length() < dist) {
+            closest = &b;
+            dist = pred.get_distance(b.pos()).length();
+        }
+    }
+
+    return closest->pos();
 }
 
 void Swarm::add_boid()
@@ -112,10 +147,31 @@ void Swarm::add_boid()
     _boids.push_back(Boid(p, v));
 }
 
+void Swarm::add_predator()
+{
+    std::uniform_real_distribution<double>
+            rnd_double(0, 1023);
+    Position p {rnd_double(_randomness_source), rnd_double(_randomness_source)};
+
+    std::uniform_real_distribution<float>
+            rnd_float(0.0, Settings::inst()->vel_limit());
+    Velocity v {rnd_float(_randomness_source), rnd_float(_randomness_source)};
+
+    _predators.push_back(Predator(p, v));
+}
+
 void Swarm::paint_boid(const Boid& b, QPainter& p) const
 {
-    p.drawEllipse(b.pos(), 5, 5); //Warning: may came out of screen
+    p.drawEllipse(b.pos(), 5, 5);
     p.drawLine(b.pos(), b.pos() + QPointF(5, 5) + b.vel().toPointF());
+}
+
+void Swarm::paint_predator(const Predator &pred, QPainter &p) const
+{
+    p.setBrush(Qt::red);
+    p.drawEllipse(pred.pos(), 5, 5);
+    p.drawLine(pred.pos(), pred.pos() + QPointF(5, 5) + pred.vel().toPointF());
+    p.setBrush(Qt::white);
 }
 
 void Swarm::paint_obsticles(QPainter& p) const
@@ -148,6 +204,22 @@ void Swarm::maintain_counts()
             _boids.pop_back();
         }
     }
+
+    while (Settings::inst()->predators_count() != _predators.size()) {
+        if (Settings::inst()->predators_count() > _predators.size()) {
+            add_predator();
+        } else {
+            _predators.pop_back();
+        }
+    }
+}
+
+void Swarm::kill_birds(const Predator &pred)
+{
+    _boids.erase(std::remove_if(_boids.begin(), _boids.end(),
+                                [pred] (const Boid boid)
+                                { return ( boid.get_distance(pred.pos()).length() < 5.0 ); }),
+                 _boids.end());
 }
 
 Swarm::Swarm(QWidget *parent) : QWidget(parent),
@@ -170,6 +242,9 @@ void Swarm::paintEvent(QPaintEvent *)
     move_all_boids_to_new_positions();
     for (const Boid& b : _boids) {
         paint_boid(b, p);
-        paint_obsticles(p);
     }
+    for (const Predator& pred : _predators) {
+        paint_predator(pred, p);
+    }
+    paint_obsticles(p);
 }
