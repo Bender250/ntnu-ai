@@ -41,7 +41,7 @@ void MainWindow::on_repealing_weight_sliderMoved(int position)
 void MainWindow::on_alignment_weight_sliderMoved(int position)
 {
     double w = std::pow(2, position/frac);
-    Settings::inst()->setWeight_second(w);
+    Settings::inst()->setWeight_third(w);
 }
 
 void MainWindow::on_velocity_limit_sliderMoved(int position)

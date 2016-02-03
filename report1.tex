@@ -1,0 +1,70 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{xcolor}
+\definecolor{dark-red}{rgb}{0.6,0.15,0.15}
+\definecolor{dark-green}{rgb}{0.15,0.4,0.15}
+\definecolor{medium-blue}{rgb}{0,0,0.5}
+\definecolor{LightGray}{rgb}{0.95,0.95,0.95}
+% generating hyperlinks in document
+\usepackage[pdfpagelabels,      % write arabic labels to all pages
+            unicode,            % allow unicode characters in links
+            colorlinks=true,    % use colored links instead of boxed
+            linkcolor={dark-red},
+            citecolor={dark-green},
+            urlcolor={medium-blue}
+            ]{hyperref}
+
+% math symbols and environments
+\usepackage{mathtools}
+\usepackage{amssymb} %matematika
+\usepackage{microtype}
+
+\newcommand{\qt}[0]{\texttt{Qt}}
+\newcommand{\cpp}[0]{\texttt{C++}}
+
+\setlength\parindent{0pt}
+\usepackage[parfill]{parskip}
+
+\title{Project 1 IT3708:\\ Flocking and Avoidance With Boids}
+\author{Karel Kubicek}
+\date{\today}
+
+\begin{document}
+
+    \vspace*{-130pt}
+    {\let\newpage\relax\maketitle}
+
+\subsection*{Implementation}
+
+The project is done in \texttt{C++ 11} with \texttt{Qt 5.5} framework for UI. Project code can be found on \url{https://github.com/Bender250/ntnu-ai}. Project code is structured in this way:
+\begin{itemize}
+\itemsep-0.5em
+    \item \texttt{boid.h} and \texttt{boid.cpp} are files with class for single boid. There is also class \texttt{Predator}, which inherits \texttt{Boid} class (this inheritance is not necessary (\texttt{Boid} class can be used directly for predator implementation, but it is mostly for the readability of code. These classes contains mainly support function. Boid has its velocity and positions that are done using \qt{} vector and point classes.
+    \item \texttt{swarm.h} and \texttt{swarm.cpp} are files of \texttt{Swarm} class. This class contains collections (\cpp{} vector) of boids, predators and obstacles. In this class, movement of boids is counted (because here is the information about other objects). This class also paints the main window with boids. This is done by inheritance of \qt{} \texttt{QWidget} and overloading method \texttt{paintEvent}. Resulting simulations can run with 60 FPS for 500 boids on CPU.
+    \item \texttt{mainwindow.h} and \texttt{mainwindow.cpp} adds the UI (sliders) for maintaining the simulation. All weight sliders are exponential, other sliders are linear.
+    \item \texttt{settings.h} maintain singleton class of current settings. Almost all constants are set by this class and are stored after closing the application.
+    \item \texttt{main.cpp} only starts the simulations (it is minimalistic in \qt{} manner).
+\end{itemize}
+
+The code is based on pseudocode \url{http://www.kfish.org/boids/pseudocode.html}. So the boid velocity is sum of 5 different velocities (separation, alignment, cohesion and avoidance of obstacles and predators). Code differs from pseudocode by adding cohesion perimeter (so boids move to the center of local flock) and inverse solution of separation. Separation strength is inverse proportionally based on distance (instead of proportionally in case of pseudocode, which makes really quick jumping from nearby boids).
+
+Alignment is done as a mean of velocities of boids in given perimeter. Small difference from the pseudocode is calculating current boid together with visible boids (this has no impact on alignement and centering and it simplifies code by one \texttt{if}).
+
+Same approach as boid avoidance is used for obstacles and predators avoidance. For obstacles, the velocity is inverse proportionally to quadratic function of distance -- so the weight is bigger in case, that obstacle is close, but small, if it is distant enough.
+
+Predators movement is based on 3 velocities: chasing flock in father range, chasing one boid in closer range (with bigger weight) and avoidance of obstacles. Predators are faster (by 10\%), but does not see trough borders (so boids can flee them trough borders). If predator gets to the boid, boid is killed and another one emerges.
+
+\subsection*{Emergent behavior for given scenarios}
+
+\begin{enumerate}
+\itemsep-0.5em
+    \item With increase of cohesion, boids gets closer together. In some moment, cohesion is stronger then separation and they touch together. In this situation, they create something like circuit with diameter equal to separation perimeter. After small increase of cohesion, they group to a dot. In case, that we decrease first alignment weight and then the separation weight (with cohesion not extremely high), boids go to center of flock, but they fly trough it, so they form smaller mirror image of their previous position.
+    \item If we set high alignment, and low other weights, all boids would move same way, but flocking behavior would be lost.
+    \item With strong separation and low alignment and cohesion, behaviour is similar to Brownian motion. Boid move same direction, until they get close to other boid, which repeal it (similar to molecule hit).
+    \item With low separation and high other weights, boids do not form a dot as in 1. scenario, but they create line. The first boids do not turn to wait for others, so speed limit does not allow them to get completely together.
+    \item Low alignment maybe describes flock of mosquitoes. The motion is chaotic, but they form a group and holds their distances.
+    \item With few boids ($< 100$ in my case), motion is similar to scenario 2. Difference comes with more boids, than is space. Boids starts to form a grid, there distance between groups is based on separation perimeter. When they former this more stable state, they move with the same direction.
+\end{enumerate}
+
+\end{document}
