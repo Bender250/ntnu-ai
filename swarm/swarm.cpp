@@ -96,7 +96,7 @@ Velocity Swarm::avoid_obsticles(const Boid& curr) const
         const Velocity dist = curr.get_distance(o);
 
         if ((dist.length() - 5.0) < Settings::inst()->repealing_perimeter()) {
-            vel = vel + (dist * (200.0 / (dist.length() * dist.length() + 0.01) ));
+            vel = vel + (dist * (400.0 / (dist.length() * dist.length() + 0.01) ));
         }
     }
 
