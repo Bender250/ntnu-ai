@@ -1,0 +1,12 @@
+{
+    "population" : {
+        "size" : 20,
+        "replacement_size" : 12
+    },
+    "evolution" : {
+        "mutation_probability" : 0.05,
+        "crossover_probability" : 0.5,
+        "crossover_position_random" : false
+    },
+    "seed" : 0
+}
