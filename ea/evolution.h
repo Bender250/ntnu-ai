@@ -6,8 +6,16 @@
 class Evolution
 {
 private:
-    Population p;
+    Population _p;
+    Population x;
+
+    Stats _global_best;
+    Stats _global_worst;
+    Stats _global_average;
+
+    void update_stats(const Stats &current, uint64_t gen);
 public:
+    void run();
     Evolution();
 };
 

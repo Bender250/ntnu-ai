@@ -9,12 +9,24 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
+enum Project {
+    ONE_MAX = 1, LOLZ = 2, SEQUENCES = 3
+};
+
+enum Adult_sel_strat {
+    FULL_GEN_REPLACE = 1, OVER_PRODUCTION = 2, GENERATIONAL_MIXING = 3
+};
+
 //singleton settings
 class Settings {
     Settings() {}
     Settings(const Settings &);
     Settings& operator =(const Settings&);
     static Settings* _i;
+
+public:
+
+    Project _project;
 
     uint64_t _individual_count = 20;
     uint64_t _replacement_size = 12;
@@ -24,11 +36,16 @@ class Settings {
 
     bool _crossover_position_random = false;
 
+    bool _stop_by_gen = true;
+    uint64_t _generations = 100;
+    float _fitness = 0.9;
+
+    Adult_sel_strat _adult_sel_strat = FULL_GEN_REPLACE;
+
     uint64_t _one_max_vector_size = 40;
 
     std::mt19937 _randomness_source; //little messy this class purpose
 
-public:
     static Settings* inst() {
         if (!_i) {
             _i = new Settings;
@@ -40,14 +57,37 @@ public:
         boost::property_tree::ptree jsontree;
         boost::property_tree::read_json(filename, jsontree);
 
+        _project = static_cast<Project>(jsontree.get<int>("project"));
+
+        switch (_project) {
+        case ONE_MAX:
+            _one_max_vector_size = jsontree.get<uint64_t>("project_settings.one_max.vector_size");
+
+            break;
+        case LOLZ:
+
+            break;
+        case SEQUENCES:
+
+            break;
+        default:
+            std::cerr << "bad project type: " << _project << std::endl;
+            exit(1);
+            break;
+        }
+
         _individual_count = jsontree.get<uint64_t>("population.size");
         _replacement_size = jsontree.get<uint64_t>("population.replacement_size");
 
-        _mutation_probability = jsontree.get<uint64_t>("evolution.mutation_probability");
-        _crossover_probability = jsontree.get<uint64_t>("evolution.crossover_probability");
+        _mutation_probability = jsontree.get<float>("evolution.mutation_probability");
+        _crossover_probability = jsontree.get<float>("evolution.crossover_probability");
         _crossover_position_random = jsontree.get<bool>("evolution.crossover_position_random");
 
-        _one_max_vector_size = jsontree.get<uint64_t>("one_max.vector_size");
+        _adult_sel_strat = static_cast<Adult_sel_strat>(jsontree.get<uint64_t>("evolution.adult_sel_strat"));
+
+        _stop_by_gen = jsontree.get<bool>("evolution.stop_by_gen");
+        _generations = jsontree.get<uint64_t>("evolution.stop.generations");
+        _fitness = jsontree.get<float>("evolution.stop.fitness");
 
         _randomness_source.seed(jsontree.get<uint64_t>("seed"));
     }
@@ -58,44 +98,7 @@ public:
         file.open(filename);
         file << "Individuals count:" << _individual_count << std::endl;
     }
-
-
-    double individual_count() const
-    {
-        return _individual_count;
-    }
-
-    float mutation_probability() const
-    {
-        return _mutation_probability;
-    }
-
-    float crossover_probability() const
-    {
-        return _crossover_probability;
-    }
-
-    uint64_t replacement_size() const
-    {
-        return _replacement_size;
-    }
-
-    bool crossover_position_random() const
-    {
-        return _crossover_position_random;
-    }
-
-    std::mt19937 randomness_source() const
-    {
-        return _randomness_source;
-    }
-
-    uint64_t one_max_vector_size() const
-    {
-        return _one_max_vector_size;
-    }
 };
 
 #endif // SETTINGS_H
-
 

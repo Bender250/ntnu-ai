@@ -4,7 +4,6 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += main.cpp \
-    individual.cpp \
     population.cpp \
     evolution.cpp \
     ind/one_max_individual.cpp

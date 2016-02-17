@@ -7,11 +7,13 @@ Settings *Settings::_i = 0;
 
 int main(int argc, char *argv[])
 {
-    //load settings
-    //create Evolution
-    //initialize evo
-    //start evo
-    //print result
-    //cleanup
+    std::string config = "config.js";
+    if (argc > 1) {
+        config = argv[1];
+    }
+    Settings::inst()->load(config);
+
+    Evolution e;
+    e.run();
     return 0;
 }

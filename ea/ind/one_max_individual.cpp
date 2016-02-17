@@ -1,11 +1,11 @@
 #include "one_max_individual.h"
 
-std::vector<uint64_t> One_max_individual::to_int() const
+std::vector<uint64_t> One_max_individual::to_phenotype_int() const
 {
     std::vector<uint64_t> out;
     uint64_t pos = 0;
     uint64_t tmp = 0;
-    for (const bool &b : _bitset) {
+    for (const bool &b : _genotype) {
         tmp = (tmp << 1) + b;
         ++pos;
         if (pos % 64 == 0) {
@@ -16,52 +16,50 @@ std::vector<uint64_t> One_max_individual::to_int() const
     return out;
 }
 
-std::string One_max_individual::to_string() const
+std::string One_max_individual::to_phenotype_string() const
 {
     std::string out;
-    for (const bool &b : _bitset) {
+    for (const bool &b : _genotype) {
         out.push_back( b ? '1' : '0' );
     }
     return out;
 }
 
-float One_max_individual::get_fitness() const
+float One_max_individual::evaluate_fitness()
 {
     uint64_t i = 0;
 
-    for (const bool &b : _bitset) {
+    for (const bool &b : _genotype) {
         if (b)
             ++i;
     }
 
-    return (i/_bitset.size());
+    _fitness = (i/_genotype.size());
+    return _fitness;
 }
 
 void One_max_individual::mutate()
 {
-    std::uniform_int_distribution<uint64_t> rnd_int(0, _bitset.size());
-    auto r = Settings::inst()->randomness_source(); //what? why I can not pas it directly?
-    uint64_t position = rnd_int(r);
-    _bitset[position] = !_bitset[position];
+    std::uniform_int_distribution<uint64_t> rnd_int(0, _genotype.size());
+    uint64_t position = rnd_int(Settings::inst()->_randomness_source);
+    _genotype[position] = !_genotype[position];
 }
 
-Individual One_max_individual::cross_over(const Individual &ind)
+One_max_individual One_max_individual::cross_over(const One_max_individual &ind) const
 {
-    uint64_t position = _bitset.size()/2;
-    if (Settings::inst()->crossover_position_random()) {
-        std::uniform_int_distribution<uint64_t>
-                rnd_int(0, _bitset.size());
-        auto r = Settings::inst()->randomness_source();
-        position = rnd_int(r);
+    uint64_t position = _genotype.size()/2;
+    if (Settings::inst()->_crossover_position_random) {
+        std::uniform_int_distribution<uint64_t> rnd_int(0, _genotype.size());
+        position = rnd_int(Settings::inst()->_randomness_source);
     }
 
 
-    std::vector<bool> new_indiv(_bitset);
+    std::vector<bool> new_indiv(_genotype);
 
-    for (uint64_t i = position; position < _bitset.size(); ++i) {
-        new_indiv[i] = ind.getBitset()[i];
+    for (uint64_t i = position; position < _genotype.size(); ++i) {
+        new_indiv[i] = ind.get_genotype()[i];
     }
 
-    return Individual(new_indiv);
+    return One_max_individual(new_indiv);
 }
 
