@@ -33,10 +33,17 @@ private:
     float get_sigma() const;
     void parent_selection_tournament();
     void parent_selection_boltzmann();
+    float get_boltzmann(uint64_t i) const;
     void parent_selection_rank();
     void parent_selection_deterministic_uniform();
     void parent_selection_stochastic_uniform();
     void reproduction();
+
+    struct {
+        bool operator ()(std::unique_ptr<Individual> &a, std::unique_ptr<Individual> &b) {
+            return a->getFitness() < b->getFitness();
+        }
+    } _increasing_comparator;
 public:
     Stats evaluate();
     void log() const;

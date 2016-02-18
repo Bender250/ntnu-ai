@@ -45,8 +45,9 @@ void One_max_individual::mutate()
     _genotype[position] = !_genotype[position];
 }
 
-One_max_individual One_max_individual::cross_over(const One_max_individual &ind) const
+std::unique_ptr<Individual> One_max_individual::cross_over(const std::unique_ptr<Individual> &in) const
 {
+    //in = dynamic_cast<std::unique_ptr<One_max_individual>>(in);
     uint64_t position = _genotype.size()/2;
     if (Settings::inst()->_crossover_position_random) {
         std::uniform_int_distribution<uint64_t> rnd_int(0, _genotype.size());
@@ -57,9 +58,14 @@ One_max_individual One_max_individual::cross_over(const One_max_individual &ind)
     std::vector<bool> new_indiv(_genotype);
 
     for (uint64_t i = position; position < _genotype.size(); ++i) {
-        new_indiv[i] = ind.get_genotype()[i];
+        new_indiv[i] = in->get_genotype()[i];
     }
 
-    return One_max_individual(new_indiv);
+    return (std::unique_ptr<One_max_individual>(new One_max_individual(new_indiv)));
+}
+
+std::unique_ptr<Individual> One_max_individual::get_copy() const
+{
+    return (std::unique_ptr<One_max_individual>(new One_max_individual(_genotype)));
 }
 

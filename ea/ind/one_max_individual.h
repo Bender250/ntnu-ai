@@ -27,7 +27,8 @@ public:
 
     float evaluate_fitness();
     void mutate();
-    One_max_individual cross_over(const One_max_individual &ind) const;
+    std::unique_ptr<Individual> cross_over(const std::unique_ptr<Individual> &in) const;
+    std::unique_ptr<Individual> get_copy() const;
 };
 
 #endif // ONE_MAX_INDIVIDUAL_H

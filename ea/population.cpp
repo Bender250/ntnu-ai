@@ -11,11 +11,13 @@ void Population::fitness_testing()
         _current.min = std::min(f, _current.min);
         _current.average += f;
     }
+    //TODO maybe add fitness evaluation of children too
     _current.average /= _genome.size();
 }
 
 void Population::adult_selection()
 {
+    //TODO maybe clean the _children vector
     switch (Settings::inst()->_adult_sel_strat) {
     case FULL_GEN_REPLACE:
         adult_selection_full_gen_replace();
@@ -66,7 +68,6 @@ void Population::adult_selection_generational_mixing()
 
 void Population::parent_selection()
 {
-    // TODO: get fitness and update stats - needed in functions
     switch (Settings::inst()->_parent_sel_strat) {
     case FITNESS_PROPORTIONATE:
         parent_selection_fitness_proportional();
@@ -136,6 +137,7 @@ void Population::parent_selection_sigma_scaling()
     for (uint64_t i = 1; i < _genome.size(); ++i) {
         stacked_fitness.push_back(get_sigma_scaling(i, sig) + stacked_fitness[i-1]);
     }
+
     std::uniform_real_distribution<float> rnd_float(0, stacked_fitness[stacked_fitness.size() - 1]);
     for (uint64_t i = 0; i < Settings::inst()->_parent_count; ++i) {
         float r = rnd_float(Settings::inst()->_randomness_source);
@@ -148,37 +150,100 @@ void Population::parent_selection_sigma_scaling()
 
 void Population::parent_selection_tournament()
 {
+    std::cerr << "TODO: Not implemented yet" << std::endl;
+    exit(1);
+}
 
+float Population::get_boltzmann(uint64_t i) const
+{
+    float res = std::exp(_genome[i]->getFitness() / (Settings::inst()->_current_generation + 1));
+    return (res / std::exp(_current.average / (Settings::inst()->_current_generation + 1)));
 }
 
 void Population::parent_selection_boltzmann()
 {
+    std::vector<float> stacked_fitness;
 
+    stacked_fitness.push_back(get_boltzmann(0));
+    for (uint64_t i = 1; i < _genome.size(); ++i) {
+        stacked_fitness.push_back(get_boltzmann(i) + stacked_fitness[i-1]);
+    }
+
+    std::uniform_real_distribution<float> rnd_float(0, stacked_fitness[stacked_fitness.size() - 1]);
+    for (uint64_t i = 0; i < Settings::inst()->_parent_count; ++i) {
+        float r = rnd_float(Settings::inst()->_randomness_source);
+        uint64_t par = 0;
+        while (par < stacked_fitness.size() && r < stacked_fitness[par])
+            ++par;
+        _parents.push_back(par);
+    }
 }
 
 void Population::parent_selection_rank()
 {
+    std::vector<uint64_t> stacked_fitness;
 
+    std::sort(_genome.begin(), _genome.end(), _increasing_comparator);
+    stacked_fitness.push_back(1);
+    for (uint64_t i = 1; i < _genome.size(); ++i) {
+        stacked_fitness.push_back(i + stacked_fitness[i - 1] + 1);
+    }
+
+    std::uniform_int_distribution<uint64_t> rnd_int(0, stacked_fitness[stacked_fitness.size() - 1]);
+    for (uint64_t i = 0; i < Settings::inst()->_parent_count; ++i) {
+        uint64_t r = rnd_int(Settings::inst()->_randomness_source);
+        uint64_t par = 0;
+        while (par < stacked_fitness.size() && r < stacked_fitness[par])
+            ++par;
+        _parents.push_back(par);
+    }
 }
 
 void Population::parent_selection_deterministic_uniform()
 {
-
+    for (uint64_t i = 0; i < Settings::inst()->_parent_count; ++i) {
+         // I assume, that this is runned with _parent_count beeing multiple of _genome.size
+        _parents.push_back(i % _genome.size());
+    }
 }
 
 void Population::parent_selection_stochastic_uniform()
 {
-
+    std::uniform_int_distribution<uint64_t> rnd_int(0, _genome.size() - 1);
+    for (uint64_t i = 0; i < Settings::inst()->_parent_count; ++i) {
+        _parents.push_back(rnd_int(Settings::inst()->_randomness_source));
+    }
 }
 
 void Population::reproduction()
 {
+    std::uniform_int_distribution<uint64_t> rnd_int(0, _parents.size() - 1);
+    std::bernoulli_distribution crossover(Settings::inst()->_crossover_probability);
+    std::bernoulli_distribution mutate(Settings::inst()->_mutation_probability);
 
+    _children.erase(_children.begin(), _children.end()); //_children from previous run
+
+    for (uint64_t i = 0; i < Settings::inst()->_children_count; ++i) {
+        std::unique_ptr<Individual> offspring;
+        if (crossover(Settings::inst()->_randomness_source))
+            offspring = _genome[_parents[rnd_int(Settings::inst()->_randomness_source)]]->cross_over(_genome[_parents[rnd_int(Settings::inst()->_randomness_source)]]);
+        else
+            offspring = _genome[_parents[rnd_int(Settings::inst()->_randomness_source)]]->get_copy();
+
+        if (mutate(Settings::inst()->_randomness_source)) {
+            offspring->mutate();
+        }
+        _children.push_back(move(offspring));
+    }
 }
 
 Stats Population::evaluate()
 {
-
+    fitness_testing(); //so individuals have set current fitness
+    adult_selection();
+    parent_selection();
+    reproduction();
+    return _current;
 }
 
 void Population::log() const

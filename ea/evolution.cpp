@@ -28,8 +28,3 @@ void Evolution::run()
     }
     _p.print_final_fitness();
 }
-
-Evolution::Evolution() : _p()
-{
-
-}

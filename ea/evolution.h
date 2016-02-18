@@ -16,7 +16,7 @@ private:
     void update_stats(const Stats &current, uint64_t gen);
 public:
     void run();
-    Evolution();
+    Evolution() : _p() {}
 };
 
 #endif // EVOLUTION_H

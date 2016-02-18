@@ -26,7 +26,8 @@ public:
 
     virtual float evaluate_fitness() = 0;
     virtual void mutate() = 0;
-    //virtual Individual cross_over(const Individual &in) = 0;
+    virtual std::unique_ptr<Individual> cross_over(const std::unique_ptr<Individual> &in) const = 0;
+    virtual std::unique_ptr<Individual> get_copy() const = 0;
 
     std::vector<bool> get_genotype() const {
         return _genotype;
