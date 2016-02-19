@@ -14,7 +14,7 @@
         "stop_by_gen" : true,
         "stop" : {
             "fitness" : 0.9,
-            "generations" : 100
+            "generations" : 100000
         },
         "//" : "strategies: full gen replacement = 1, over production = 2, generational mixing = 3",
         "adult_sel_strat" : 1,

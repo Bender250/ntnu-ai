@@ -16,7 +16,14 @@ void Population::fitness_testing()
         _current.min = std::min(f, _current.min);
         _current.average += f;
     }
+
     //TODO maybe add fitness evaluation of children too
+    for (auto &indiv : _children) {
+        /*float f = */indiv->evaluate_fitness(); //just evaluate, not log stat
+        /*_current.max = std::max(f, _current.max);
+        _current.min = std::min(f, _current.min);
+        _current.average += f;*/
+    }
     _current.average /= _genome.size();
 }
 
@@ -73,6 +80,8 @@ void Population::adult_selection_generational_mixing()
 
 void Population::parent_selection()
 {
+    _parents.erase(_parents.begin(), _parents.end());
+
     switch (Settings::inst()->_parent_sel_strat) {
     case FITNESS_PROPORTIONATE:
         parent_selection_fitness_proportional();
@@ -115,7 +124,7 @@ void Population::parent_selection_fitness_proportional()
     for (uint64_t i = 0; i < Settings::inst()->_parent_count; ++i) {
         float r = rnd_float(Settings::inst()->_randomness_source);
         uint64_t par = 0;
-        while (par < stacked_fitness.size() && r < stacked_fitness[par])
+        while (par < stacked_fitness.size() && r > stacked_fitness[par])
             ++par;
         _parents.push_back(par);
     }
@@ -231,9 +240,18 @@ void Population::reproduction()
     for (uint64_t i = 0; i < Settings::inst()->_children_count; ++i) {
         std::unique_ptr<Individual> offspring;
         if (crossover(Settings::inst()->_randomness_source))
-            offspring = _genome[_parents[rnd_int(Settings::inst()->_randomness_source)]]->cross_over(_genome[_parents[rnd_int(Settings::inst()->_randomness_source)]]);
+            offspring = _genome[
+                            _parents[
+                                rnd_int(Settings::inst()->_randomness_source)]]
+                        ->cross_over(
+                            _genome[
+                                _parents[
+                                    rnd_int(Settings::inst()->_randomness_source)]]);
         else
-            offspring = _genome[_parents[rnd_int(Settings::inst()->_randomness_source)]]->get_copy();
+            offspring = _genome[
+                            _parents[
+                                rnd_int(Settings::inst()->_randomness_source)]]
+                        ->get_copy();
 
         if (mutate(Settings::inst()->_randomness_source)) {
             offspring->mutate();
@@ -247,7 +265,8 @@ Stats Population::evaluate()
     ++_current_gen;
 
     fitness_testing(); //so individuals have set current fitness
-    adult_selection();
+    if (_current_gen != 1)
+        adult_selection();
     parent_selection();
     reproduction();
     return _current;

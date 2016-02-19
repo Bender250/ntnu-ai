@@ -8,12 +8,11 @@ class One_max_individual : public Individual
 public:
     One_max_individual() {
         std::uniform_int_distribution<uint64_t> rnd_int;
-        uint64_t rnd;
-        auto r = Settings::inst()->_randomness_source;
+        uint64_t rnd = rnd_int(Settings::inst()->_randomness_source);
 
         for (uint64_t i = 0; i < Settings::inst()->_one_max_vector_size; ++i) {
             if (i % 64 == 0) {
-                rnd = rnd_int(r);
+                rnd = rnd_int(Settings::inst()->_randomness_source);
             }
             _genotype.push_back(rnd & 0x01);
             rnd >>= 1;

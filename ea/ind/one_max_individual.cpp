@@ -34,7 +34,7 @@ float One_max_individual::evaluate_fitness()
             ++i;
     }
 
-    _fitness = (i/_genotype.size());
+    _fitness = ((float) i/(float) _genotype.size());
     return _fitness;
 }
 
@@ -57,7 +57,7 @@ std::unique_ptr<Individual> One_max_individual::cross_over(const std::unique_ptr
 
     std::vector<bool> new_indiv(_genotype);
 
-    for (uint64_t i = position; position < _genotype.size(); ++i) {
+    for (uint64_t i = position; i < _genotype.size(); ++i) {
         new_indiv[i] = in->get_genotype()[i];
     }
 

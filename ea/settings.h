@@ -103,7 +103,7 @@ public:
         _fitness = jsontree.get<float>("evolution.stop.fitness");
 
         _randomness_source.seed(jsontree.get<uint64_t>("seed"));
-        _log.open("log.txt");
+        _log.open("../log.txt");
     }
 };
 
