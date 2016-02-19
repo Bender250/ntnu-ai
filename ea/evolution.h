@@ -13,7 +13,9 @@ private:
     Stats _global_worst;
     Stats _global_average;
 
-    void update_stats(const Stats &current, uint64_t gen);
+    void update_stats(const Stats &current);
+    void finalize_stats();
+    void print_fitnesses() const;
 public:
     void run();
     Evolution() : _p() {}

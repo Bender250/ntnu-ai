@@ -1,5 +1,10 @@
 #include "population.h"
 
+uint64_t Population::getCurrent_gen() const
+{
+    return _current_gen;
+}
+
 void Population::fitness_testing()
 {
     _current.max = 0;
@@ -156,8 +161,8 @@ void Population::parent_selection_tournament()
 
 float Population::get_boltzmann(uint64_t i) const
 {
-    float res = std::exp(_genome[i]->getFitness() / (Settings::inst()->_current_generation + 1));
-    return (res / std::exp(_current.average / (Settings::inst()->_current_generation + 1)));
+    float res = std::exp(_genome[i]->getFitness() / (_current_gen + 1));
+    return (res / std::exp(_current.average / (_current_gen + 1)));
 }
 
 void Population::parent_selection_boltzmann()
@@ -239,6 +244,8 @@ void Population::reproduction()
 
 Stats Population::evaluate()
 {
+    ++_current_gen;
+
     fitness_testing(); //so individuals have set current fitness
     adult_selection();
     parent_selection();
@@ -248,15 +255,28 @@ Stats Population::evaluate()
 
 void Population::log() const
 {
-
+    Settings::inst()->_log << _current_gen;
+    Settings::inst()->_log << "    " << _current.min;
+    Settings::inst()->_log << "    " << _current.max;
+    Settings::inst()->_log << "    " << _current.average << std::endl;
 }
 
 void Population::print_final_fitness() const
 {
+    Settings::inst()->_log << "Final results:" << std::endl;
+    std::cout << "Final results:" << std::endl;
 
+    Settings::inst()->_log << "Fitness min:" << _current.min << std::endl;
+    std::cout << "Fitness min:" << _current.min << std::endl;
+
+    Settings::inst()->_log << "Fitness max:" << _current.max << std::endl;
+    std::cout << "Fitness max:" << _current.max << std::endl;
+
+    Settings::inst()->_log << "Fitness avg:" << _current.average << std::endl;
+    std::cout << "Fitness avg:" << _current.average << std::endl;
 }
 
-Population::Population()
+Population::Population() : _current_gen(0)
 {
     for (uint64_t i = 0; i < Settings::inst()->_individual_count; ++i) {
         if (Settings::inst()->_project == ONE_MAX) {

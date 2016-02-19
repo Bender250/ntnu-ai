@@ -19,6 +19,7 @@ private:
     std::vector<std::unique_ptr<Individual>> _children;
     std::vector<uint64_t> _parents;
     Stats _current;
+    uint64_t _current_gen = 0;
 
     void fitness_testing();
     void adult_selection();
@@ -49,6 +50,7 @@ public:
     void log() const;
     void print_final_fitness() const;
     Population(); //generate initial population
+    uint64_t getCurrent_gen() const;
 };
 
 #endif // POPULATION_H

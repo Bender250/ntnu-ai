@@ -43,7 +43,6 @@ public:
 
     bool _stop_by_gen = true;
     uint64_t _generations = 100;
-    uint64_t _current_generation = 0;
     float _fitness = 0.9;
 
     Adult_sel_strat _adult_sel_strat = FULL_GEN_REPLACE;
@@ -55,6 +54,7 @@ public:
     uint64_t _one_max_vector_size = 40;
 
     std::mt19937 _randomness_source; //little messy this class purpose
+    std::ofstream _log;
 
     static Settings* inst() {
         if (!_i) {
@@ -103,13 +103,7 @@ public:
         _fitness = jsontree.get<float>("evolution.stop.fitness");
 
         _randomness_source.seed(jsontree.get<uint64_t>("seed"));
-    }
-
-    void print_to_file(const std::string& filename) const
-    {
-        std::ofstream file;
-        file.open(filename);
-        file << "Individuals count:" << _individual_count << std::endl;
+        _log.open("log.txt");
     }
 };
 
