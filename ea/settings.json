@@ -14,7 +14,7 @@
         "stop_by_gen" : true,
         "stop" : {
             "fitness" : 0.9,
-            "generations" : 100000
+            "generations" : 100
         },
         "//" : "strategies: full gen replacement = 1, over production = 2, generational mixing = 3",
         "adult_sel_strat" : 1,
@@ -24,7 +24,7 @@
         },
 
         "//" : "strategies: fitness proportionate = 1, sigma scaling = 2, tournament selection = 3, boltzmann selection = 4, rank selection = 5, deterministic uniform selection = 6, stochastic uniform selection = 7",
-        "parent_sel_strat" : 1
+        "parent_sel_strat" : 7
     },
 
     "project_settings" : {

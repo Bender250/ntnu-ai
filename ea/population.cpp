@@ -156,7 +156,7 @@ void Population::parent_selection_sigma_scaling()
     for (uint64_t i = 0; i < Settings::inst()->_parent_count; ++i) {
         float r = rnd_float(Settings::inst()->_randomness_source);
         uint64_t par = 0;
-        while (par < stacked_fitness.size() && r < stacked_fitness[par])
+        while (par < stacked_fitness.size() && r > stacked_fitness[par])
             ++par;
         _parents.push_back(par);
     }
@@ -187,7 +187,7 @@ void Population::parent_selection_boltzmann()
     for (uint64_t i = 0; i < Settings::inst()->_parent_count; ++i) {
         float r = rnd_float(Settings::inst()->_randomness_source);
         uint64_t par = 0;
-        while (par < stacked_fitness.size() && r < stacked_fitness[par])
+        while (par < stacked_fitness.size() && r > stacked_fitness[par])
             ++par;
         _parents.push_back(par);
     }
@@ -207,7 +207,7 @@ void Population::parent_selection_rank()
     for (uint64_t i = 0; i < Settings::inst()->_parent_count; ++i) {
         uint64_t r = rnd_int(Settings::inst()->_randomness_source);
         uint64_t par = 0;
-        while (par < stacked_fitness.size() && r < stacked_fitness[par])
+        while (par < stacked_fitness.size() && r > stacked_fitness[par])
             ++par;
         _parents.push_back(par);
     }
