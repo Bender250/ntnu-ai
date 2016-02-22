@@ -14,7 +14,7 @@ enum Project {
 };
 
 enum Adult_sel_strat {
-    FULL_GEN_REPLACE = 1, OVER_PRODUCTION = 2, GENERATIONAL_MIXING = 3
+    FULL_GEN_REPLACE = 1, OVER_PRODUCTION = 2, GENERATIONAL_MIXING = 3, DET_MIXING = 4
 };
 
 enum Parent_sel_strat {
@@ -52,6 +52,10 @@ public:
     Parent_sel_strat _parent_sel_strat = FITNESS_PROPORTIONATE;
 
     uint64_t _one_max_vector_size = 40;
+    uint64_t _one_max_target_vector = 40;
+
+    uint64_t _lolz_vector_size = 64;
+    uint64_t _lolz_z = 40;
 
     std::mt19937 _randomness_source; //little messy this class purpose
     std::ofstream _log;
@@ -72,10 +76,11 @@ public:
         switch (_project) {
         case ONE_MAX:
             _one_max_vector_size = jsontree.get<uint64_t>("project_settings.one_max.vector_size");
-
+            _one_max_target_vector = jsontree.get<uint64_t>("project_settings.one_max.target_vector");
             break;
         case LOLZ:
-
+            _lolz_vector_size = jsontree.get<uint64_t>("project_settings.lolz.vector_size");
+            _lolz_z = jsontree.get<uint64_t>("project_settings.lolz.z");
             break;
         case SEQUENCES:
 
@@ -101,6 +106,7 @@ public:
         _stop_by_gen = jsontree.get<bool>("evolution.stop_by_gen");
         _generations = jsontree.get<uint64_t>("evolution.stop.generations");
         _fitness = jsontree.get<float>("evolution.stop.fitness");
+
 
         _randomness_source.seed(jsontree.get<uint64_t>("seed"));
         _log.open("../log.txt");

@@ -7,6 +7,7 @@
 
 #include "individual.h"
 #include "./ind/one_max_individual.h"
+#include "./ind/lolz.h"
 
 struct Stats {
     float max, min, average;
@@ -23,6 +24,7 @@ private:
 
     void fitness_testing();
     void adult_selection();
+    void adult_selection_deterministic_mixing();
     void adult_selection_full_gen_replace();
     void adult_selection_over_production();
     void adult_selection_generational_mixing();
@@ -45,6 +47,11 @@ private:
             return a->getFitness() < b->getFitness();
         }
     } _increasing_comparator;
+    struct {
+        bool operator ()(std::unique_ptr<Individual> &a, std::unique_ptr<Individual> &b) {
+            return a->getFitness() > b->getFitness();
+        }
+    } _decreasing_comparator;
 public:
     Stats evaluate();
     void log() const;

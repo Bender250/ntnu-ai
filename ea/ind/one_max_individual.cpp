@@ -27,14 +27,18 @@ std::string One_max_individual::to_phenotype_string() const
 
 float One_max_individual::evaluate_fitness()
 {
-    uint64_t i = 0;
+    uint64_t i = 0, j = 0;
+    uint64_t x = Settings::inst()->_one_max_target_vector;
 
     for (const bool &b : _genotype) {
-        if (b)
+        bool tmp = x & (0x1 << j);
+        if (b == tmp) {
             ++i;
+        }
+        ++j;
     }
 
-    _fitness = ((float) i/(float) _genotype.size());
+    _fitness = ((float) i/(float) j);
     return _fitness;
 }
 

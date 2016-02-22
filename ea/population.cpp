@@ -40,6 +40,9 @@ void Population::adult_selection()
     case GENERATIONAL_MIXING:
         adult_selection_generational_mixing();
         break;
+    case DET_MIXING:
+        adult_selection_deterministic_mixing();
+        break;
     default:
         std::cerr << "no adult strategy selected: " << Settings::inst()->_adult_sel_strat << std::endl;
         exit(1);
@@ -47,16 +50,19 @@ void Population::adult_selection()
 
 }
 
+//with elitism -> we need at least population of size 2
 void Population::adult_selection_full_gen_replace()
 {
-    for (uint64_t i = 0; i < _genome.size(); ++i) {
+    std::sort(_genome.begin(), _genome.end(), _decreasing_comparator);
+    for (uint64_t i = 2; i < _genome.size(); ++i) {
         _genome[i] = std::move(_children[i]);
     }
 }
 
 void Population::adult_selection_over_production()
 {
-    std::shuffle(_children.begin(), _children.end(), Settings::inst()->_randomness_source);
+    //std::shuffle(_children.begin(), _children.end(), Settings::inst()->_randomness_source);
+    std::sort(_children.begin(), _children.end(), _decreasing_comparator);
     for (uint64_t i = 0; i < _genome.size(); ++i) {
         _genome[i] = std::move(_children[i]);
     }
@@ -64,15 +70,30 @@ void Population::adult_selection_over_production()
 
 void Population::adult_selection_generational_mixing()
 {
-    std::shuffle(_genome.begin(), _genome.end(), Settings::inst()->_randomness_source);
+    //std::shuffle(_genome.begin(), _genome.end(), Settings::inst()->_randomness_source);
+    std::sort(_children.begin(), _children.end(), _decreasing_comparator);
+    std::sort(_genome.begin(), _genome.end(), _decreasing_comparator);
     uint64_t preserve = Settings::inst()->_parent_preserve_count;
     for (uint64_t i = preserve; i < _genome.size(); ++i) {
         _genome[i] = std::move(_children[i-preserve]);
     }
-    for (uint64_t i = preserve; i < _children.size(); ++i) {
+    /*for (uint64_t i = preserve; i < _children.size(); ++i) {
         _genome.push_back(std::move(_children[i]));
     }
     std::shuffle(_genome.begin(), _genome.end(), Settings::inst()->_randomness_source);
+    while (_genome.size() > Settings::inst()->_individual_count) {
+        _genome.pop_back();
+    }*/
+}
+
+void Population::adult_selection_deterministic_mixing()
+{
+    for (uint64_t i = 0; i < _children.size(); ++i) {
+        _genome.push_back(std::move(_children[i]));
+    }
+
+    std::sort(_genome.begin(), _genome.end(), _decreasing_comparator);
+
     while (_genome.size() > Settings::inst()->_individual_count) {
         _genome.pop_back();
     }
@@ -275,9 +296,9 @@ Stats Population::evaluate()
 void Population::log() const
 {
     Settings::inst()->_log << _current_gen;
-    Settings::inst()->_log << "    " << _current.min;
-    Settings::inst()->_log << "    " << _current.max;
-    Settings::inst()->_log << "    " << _current.average << std::endl;
+    Settings::inst()->_log << "," << _current.min;
+    Settings::inst()->_log << "," << _current.max;
+    Settings::inst()->_log << "," << _current.average << std::endl;
 }
 
 void Population::print_final_fitness() const
@@ -297,10 +318,20 @@ void Population::print_final_fitness() const
 
 Population::Population() : _current_gen(0)
 {
-    for (uint64_t i = 0; i < Settings::inst()->_individual_count; ++i) {
-        if (Settings::inst()->_project == ONE_MAX) {
+    switch (Settings::inst()->_project) {
+    case ONE_MAX:
+        for (uint64_t i = 0; i < Settings::inst()->_individual_count; ++i) {
             _genome.push_back(std::unique_ptr<One_max_individual>(new One_max_individual()));
         }
+        break;
+    case LOLZ:
+        for (uint64_t i = 0; i < Settings::inst()->_individual_count; ++i) {
+            _genome.push_back(std::unique_ptr<Lolz>(new Lolz()));
+        }
+        break;
+    default:
+        break;
+
 
     }
 }
