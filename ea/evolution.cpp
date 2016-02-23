@@ -86,4 +86,5 @@ void Evolution::run()
     finalize_stats();
     _p.print_final_fitness();
     print_fitnesses();
+    _p.print_final_population();
 }

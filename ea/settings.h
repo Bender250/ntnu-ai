@@ -47,9 +47,10 @@ public:
 
     Adult_sel_strat _adult_sel_strat = FULL_GEN_REPLACE;
     uint64_t _children_count = 20;
-    uint64_t _parent_preserve_count = 10;
+    uint64_t _adult_preserve_count = 10;
 
     Parent_sel_strat _parent_sel_strat = FITNESS_PROPORTIONATE;
+    uint64_t _tournament_k = 8;
 
     uint64_t _one_max_vector_size = 40;
     uint64_t _one_max_target_vector = 40;
@@ -100,8 +101,11 @@ public:
 
         _adult_sel_strat = static_cast<Adult_sel_strat>(jsontree.get<uint64_t>("evolution.adult_sel_strat"));
         _children_count = jsontree.get<uint64_t>("evolution.adult_sel_strat_settings.children_count");
-        _parent_preserve_count = jsontree.get<uint64_t>("evolution.adult_sel_strat_settings.parent_preserve_count");
+        _adult_preserve_count = jsontree.get<uint64_t>("evolution.adult_sel_strat_settings.adult_preserve_count");
         _parent_sel_strat = static_cast<Parent_sel_strat>(jsontree.get<uint64_t>("evolution.parent_sel_strat"));
+        if (_parent_sel_strat == TOURNAMENT) {
+            _tournament_k = jsontree.get<uint64_t>("evolution.parent_sel_strat_settings.tournament_k");
+        }
 
         _stop_by_gen = jsontree.get<bool>("evolution.stop_by_gen");
         _generations = jsontree.get<uint64_t>("evolution.stop.generations");

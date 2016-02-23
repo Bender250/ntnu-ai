@@ -1,6 +1,6 @@
 {
     "//" : "1 = One-Max Problem, 2 = LOLZ Prefix Problem, 3 = Surprising Sequences",
-    "project" : 1,
+    "project" : 2,
 
     "population" : {
         "size" : 100,
@@ -14,17 +14,20 @@
         "stop_by_gen" : true,
         "stop" : {
             "fitness" : 0.9,
-            "generations" : 200
+            "generations" : 150
         },
         "//" : "strategies: full gen replacement = 1, over production = 2, generational mixing = 3, 4 = mine",
-        "adult_sel_strat" : 1,
+        "adult_sel_strat" : 3,
         "adult_sel_strat_settings" : {
             "children_count" : 100,
-            "parent_preserve_count" : 10, "//" : "appliable in case of generational mixing"
+            "adult_preserve_count" : 10, "//" : "appliable in case of generational mixing"
         },
 
         "//" : "strategies: fitness proportionate = 1, sigma scaling = 2, tournament selection = 3, boltzmann selection = 4, rank selection = 5, deterministic uniform selection = 6, stochastic uniform selection = 7",
-        "parent_sel_strat" : 1
+        "parent_sel_strat" : 3,
+        "parent_sel_strat_settings" : {
+            "tournament_k" : 8
+        }
     },
 
     "project_settings" : {
@@ -33,13 +36,13 @@
             "target_vector" : 4968887813905712796
         },
         "lolz" : {
-            "vector_size" : 64,
-            "z" : 40
+            "vector_size" : 40,
+            "z" : 21
         },
         "sequences" : {
 
         }
     },
 
-    "seed" : 0
+    "seed" : 2
 }

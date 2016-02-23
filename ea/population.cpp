@@ -1,5 +1,24 @@
 #include "population.h"
 
+
+Population::Population() : _current_gen(0)
+{
+    switch (Settings::inst()->_project) {
+    case ONE_MAX:
+        for (uint64_t i = 0; i < Settings::inst()->_individual_count; ++i) {
+            _genome.push_back(std::unique_ptr<One_max_individual>(new One_max_individual()));
+        }
+        break;
+    case LOLZ:
+        for (uint64_t i = 0; i < Settings::inst()->_individual_count; ++i) {
+            _genome.push_back(std::unique_ptr<Lolz>(new Lolz()));
+        }
+        break;
+    default:
+        break;
+    }
+}
+
 uint64_t Population::getCurrent_gen() const
 {
     return _current_gen;
@@ -73,7 +92,7 @@ void Population::adult_selection_generational_mixing()
     //std::shuffle(_genome.begin(), _genome.end(), Settings::inst()->_randomness_source);
     std::sort(_children.begin(), _children.end(), _decreasing_comparator);
     std::sort(_genome.begin(), _genome.end(), _decreasing_comparator);
-    uint64_t preserve = Settings::inst()->_parent_preserve_count;
+    uint64_t preserve = Settings::inst()->_adult_preserve_count;
     for (uint64_t i = preserve; i < _genome.size(); ++i) {
         _genome[i] = std::move(_children[i-preserve]);
     }
@@ -185,8 +204,19 @@ void Population::parent_selection_sigma_scaling()
 
 void Population::parent_selection_tournament()
 {
-    std::cerr << "TODO: Not implemented yet" << std::endl;
-    exit(1);
+    std::uniform_int_distribution<uint64_t> rnd_int(0, _genome.size()-1);
+    for (uint64_t i = 0; i < Settings::inst()->_parent_count; ++i) {
+        uint64_t par = rnd_int(Settings::inst()->_randomness_source);
+
+        // to tournament is nominated_tournament_k individuals, the best is choosed as parent
+        for (uint64_t j = 0; j < Settings::inst()->_tournament_k; ++j) {
+            uint64_t alt = rnd_int(Settings::inst()->_randomness_source);
+            if (_genome[alt]->getFitness() > _genome[par]->getFitness())
+                par = alt;
+        }
+
+        _parents.push_back(par);
+    }
 }
 
 float Population::get_boltzmann(uint64_t i) const
@@ -316,22 +346,12 @@ void Population::print_final_fitness() const
     std::cout << "Fitness avg:" << _current.average << std::endl;
 }
 
-Population::Population() : _current_gen(0)
+void Population::print_final_population() const
 {
-    switch (Settings::inst()->_project) {
-    case ONE_MAX:
-        for (uint64_t i = 0; i < Settings::inst()->_individual_count; ++i) {
-            _genome.push_back(std::unique_ptr<One_max_individual>(new One_max_individual()));
-        }
-        break;
-    case LOLZ:
-        for (uint64_t i = 0; i < Settings::inst()->_individual_count; ++i) {
-            _genome.push_back(std::unique_ptr<Lolz>(new Lolz()));
-        }
-        break;
-    default:
-        break;
-
-
+    Settings::inst()->_log << "Final population:" << std::endl;
+    std::cout << "Final population:" << std::endl;
+    for (const auto &i : _genome) {
+        Settings::inst()->_log  << i->to_phenotype_string() << std::endl;
+        std::cout <<  i->to_phenotype_string() << std::endl;
     }
 }

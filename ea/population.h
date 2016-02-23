@@ -53,11 +53,12 @@ private:
         }
     } _decreasing_comparator;
 public:
+    Population(); //generate initial population
+    uint64_t getCurrent_gen() const;
     Stats evaluate();
     void log() const;
     void print_final_fitness() const;
-    Population(); //generate initial population
-    uint64_t getCurrent_gen() const;
+    void print_final_population() const;
 };
 
 #endif // POPULATION_H

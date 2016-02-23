@@ -10,7 +10,7 @@ public:
         std::uniform_int_distribution<uint64_t> rnd_int;
         uint64_t rnd = rnd_int(Settings::inst()->_randomness_source);
 
-        for (uint64_t i = 0; i < Settings::inst()->_one_max_vector_size; ++i) {
+        for (uint64_t i = 0; i < Settings::inst()->_lolz_vector_size; ++i) {
             if (i % 64 == 0) {
                 rnd = rnd_int(Settings::inst()->_randomness_source);
             }
