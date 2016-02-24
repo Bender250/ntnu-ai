@@ -14,7 +14,8 @@ enum Project {
 };
 
 enum Adult_sel_strat {
-    FULL_GEN_REPLACE = 1, OVER_PRODUCTION = 2, GENERATIONAL_MIXING = 3, DET_MIXING = 4
+    FULL_GEN_REPLACE = 1, OVER_PRODUCTION = 2, GENERATIONAL_MIXING = 3,
+    FULL_GEN_REPLACE_MOD = 4, OVER_PRODUCTION_MOD = 5, GENERATIONAL_MIXING_MOD = 6
 };
 
 enum Parent_sel_strat {
@@ -58,6 +59,11 @@ public:
     uint64_t _lolz_vector_size = 64;
     uint64_t _lolz_z = 40;
 
+    bool _sequences_local = false;
+    uint64_t _sequences_symbols_count = 4;
+    uint64_t _sequences_expected_length = 4;
+    uint64_t _sequences_d = 2;
+
     std::mt19937 _randomness_source; //little messy this class purpose
     std::ofstream _log;
 
@@ -84,7 +90,10 @@ public:
             _lolz_z = jsontree.get<uint64_t>("project_settings.lolz.z");
             break;
         case SEQUENCES:
-
+            _sequences_local = jsontree.get<bool>("project_settings.sequences.just_local");
+            _sequences_symbols_count = jsontree.get<uint64_t>("project_settings.sequences.symbols_count");
+            _sequences_expected_length = jsontree.get<uint64_t>("project_settings.sequences.expected_length");
+            _sequences_d = jsontree.get<uint64_t>("project_settings.sequences.d");
             break;
         default:
             std::cerr << "bad project type: " << _project << std::endl;

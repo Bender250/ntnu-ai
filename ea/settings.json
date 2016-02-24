@@ -8,16 +8,16 @@
     },
 
     "evolution" : {
-        "mutation_probability" : 0.05,
-        "crossover_probability" : 0.5,
-        "crossover_position_random" : false,
+        "mutation_probability" : 0.5,
+        "crossover_probability" : 0.05,
+        "crossover_position_random" : true,
         "stop_by_gen" : true,
         "stop" : {
-            "fitness" : 0.9,
-            "generations" : 150
+            "fitness" : 1,
+            "generations" : 100
         },
-        "//" : "strategies: full gen replacement = 1, over production = 2, generational mixing = 3, 4 = mine",
-        "adult_sel_strat" : 3,
+        "//" : "strategies: full gen replacement = 1, over production = 2, generational mixing = 3, 4,5,6 = previous strategies with elitism",
+        "adult_sel_strat" : 1,
         "adult_sel_strat_settings" : {
             "children_count" : 100,
             "adult_preserve_count" : 10, "//" : "appliable in case of generational mixing"
@@ -26,7 +26,7 @@
         "//" : "strategies: fitness proportionate = 1, sigma scaling = 2, tournament selection = 3, boltzmann selection = 4, rank selection = 5, deterministic uniform selection = 6, stochastic uniform selection = 7",
         "parent_sel_strat" : 3,
         "parent_sel_strat_settings" : {
-            "tournament_k" : 8
+            "tournament_k" : 4
         }
     },
 
@@ -40,9 +40,12 @@
             "z" : 21
         },
         "sequences" : {
-
+            "just_local" : false,
+            "symbols_count" : 4,
+            "expected_length" : 4,
+            "d" : 2
         }
     },
 
-    "seed" : 2
+    "seed" : 4
 }

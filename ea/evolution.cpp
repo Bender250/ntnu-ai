@@ -79,7 +79,7 @@ void Evolution::run()
         while (is_fitnes_below) {
             current = _p.evaluate();
             update_stats(current);
-            is_fitnes_below = (current.average > Settings::inst()->_fitness);
+            is_fitnes_below = (current.max < Settings::inst()->_fitness);
             _p.log();
         }
     }

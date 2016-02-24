@@ -8,6 +8,7 @@
 #include "individual.h"
 #include "./ind/one_max_individual.h"
 #include "./ind/lolz.h"
+#include "./ind/sequences.h"
 
 struct Stats {
     float max, min, average;
@@ -52,6 +53,10 @@ private:
             return a->getFitness() > b->getFitness();
         }
     } _decreasing_comparator;
+    void adult_selection_full_gen_replace_mod();
+    void adult_selection_over_production_mod();
+    void adult_selection_generational_mixing_mod();
+    uint64_t get_best_id() const;
 public:
     Population(); //generate initial population
     uint64_t getCurrent_gen() const;
