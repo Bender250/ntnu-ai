@@ -62,7 +62,6 @@ public:
     bool _sequences_local = false;
     uint64_t _sequences_symbols_count = 4;
     uint64_t _sequences_expected_length = 4;
-    uint64_t _sequences_d = 2;
 
     std::mt19937 _randomness_source; //little messy this class purpose
     std::ofstream _log;
@@ -93,7 +92,6 @@ public:
             _sequences_local = jsontree.get<bool>("project_settings.sequences.just_local");
             _sequences_symbols_count = jsontree.get<uint64_t>("project_settings.sequences.symbols_count");
             _sequences_expected_length = jsontree.get<uint64_t>("project_settings.sequences.expected_length");
-            _sequences_d = jsontree.get<uint64_t>("project_settings.sequences.d");
             break;
         default:
             std::cerr << "bad project type: " << _project << std::endl;

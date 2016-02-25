@@ -367,11 +367,11 @@ Stats Population::evaluate()
 void Population::log() const
 {
     Settings::inst()->_log << _current_gen;
-    Settings::inst()->_log << "," << _current.min;
-    Settings::inst()->_log << "," << _current.max;
-    Settings::inst()->_log << "," << _current.average;
-    Settings::inst()->_log << "," << get_sigma();
-    Settings::inst()->_log << "," << _genome[get_best_id()]->to_phenotype_string() << std::endl;
+    Settings::inst()->_log << ";" << _current.min;
+    Settings::inst()->_log << ";" << _current.max;
+    Settings::inst()->_log << ";" << _current.average;
+    Settings::inst()->_log << ";" << get_sigma();
+    Settings::inst()->_log << ";" << _genome[get_best_id()]->to_phenotype_string() << std::endl;
 }
 
 void Population::print_final_fitness() const

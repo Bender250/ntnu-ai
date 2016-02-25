@@ -9,7 +9,7 @@ std::vector<uint64_t> Sequences::to_phenotype_int() const
 std::string Sequences::to_phenotype_string() const
 {
     std::string out;
-    for (const bool &g : _genotype) {
+    for (const auto &g : _genotype) {
         out.append(std::to_string(g));
         out.append(", ");
     }
@@ -19,27 +19,63 @@ std::string Sequences::to_phenotype_string() const
 float Sequences::evaluate_fitness() //TODO
 {
     if (Settings::inst()->_sequences_local) {
-        return evaluate_fitness_local();
+        _fitness = ((float) fitness_length_local()) / (float)  Settings::inst()->_sequences_expected_length ;
+        return _fitness;
     } else {
-        return evaluate_fitness_global();
+        _fitness = ((float) fitness_length_global()) / (float) Settings::inst()->_sequences_expected_length;
+        return _fitness;
     }
 }
 
-float Sequences::evaluate_fitness_local() //TODO
+uint64_t Sequences::fitness_length_global() const
 {
-    return 0.0;
+    uint64_t collisions = 0;
+    for (uint64_t len = 1; len < _genotype.size() - 1; ++len) {
+        for (uint64_t i = 0; i < _genotype.size() - len; ++i) {
+            for (uint64_t j = i + 1; j < _genotype.size() - (len); ++j) {
+                if (_genotype[i]     == _genotype[j]
+                 && _genotype[i+len] == _genotype[j+len])
+                    ++collisions;
+            }
+        }
+
+    }
+    return (collisions == 0) ? _genotype.size() : (_genotype.size() / collisions); //TODO think, if I can calculate something more interesting
 }
 
-float Sequences::evaluate_fitness_global() //TODO
+uint64_t Sequences::fitness_length_local() const
 {
-    return 0.0;
+    uint64_t collisions = 0;
+    for (uint64_t i = 0; i < _genotype.size() - 1; ++i) {
+        for (uint64_t j = i + 1; j < _genotype.size() - 1; ++j) {
+            if (_genotype[i]   == _genotype[j]
+             && _genotype[i+1] == _genotype[j+1])
+                ++collisions;
+        }
+    }
+    return (collisions == 0) ? _genotype.size() : (_genotype.size() / collisions);
 }
 
 void Sequences::mutate()
 {
-    std::uniform_int_distribution<uint64_t> rnd_int(0, _genotype.size());
-    uint64_t position = rnd_int(Settings::inst()->_randomness_source);
-    _genotype[position] = !_genotype[position];
+    std::uniform_int_distribution<uint64_t> rnd_int;
+    uint64_t mut_type = rnd_int(Settings::inst()->_randomness_source) % 3;
+    if (_genotype.empty()) {
+        mut_type = 2;
+    }
+    switch (mut_type) {
+    case 0: {
+        uint64_t position = rnd_int(Settings::inst()->_randomness_source) % _genotype.size();
+        _genotype[position] = rnd_int(Settings::inst()->_randomness_source) % Settings::inst()->_sequences_symbols_count;
+        break;
+    }
+    case 1:
+        _genotype.erase(_genotype.begin() + (rnd_int(Settings::inst()->_randomness_source) % _genotype.size()));
+        break;
+    case 2:
+        _genotype.push_back(rnd_int(Settings::inst()->_randomness_source) % Settings::inst()->_sequences_symbols_count);
+        break;
+    }
 }
 
 std::unique_ptr<Individual> Sequences::cross_over(const std::unique_ptr<Individual> &in) const

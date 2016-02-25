@@ -27,8 +27,8 @@ public:
     std::unique_ptr<Individual> cross_over(const std::unique_ptr<Individual> &in) const;
     std::unique_ptr<Individual> get_copy() const;
 private:
-    float evaluate_fitness_local();
-    float evaluate_fitness_global();
+    uint64_t fitness_length_global() const;
+    uint64_t fitness_length_local() const;
 };
 
 #endif // SEQUENCES_H
