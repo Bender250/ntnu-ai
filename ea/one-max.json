@@ -9,7 +9,7 @@
 
     "evolution" : {
         "mutation_probability" : 0.25,
-        "crossover_probability" : 0.95,
+        "crossover_probability" : 0.5,
         "crossover_position_random" : true,
         "stop_by_gen" : true,
         "stop" : {
@@ -19,7 +19,7 @@
         "//" : "strategies: full gen replacement = 1, over production = 2, generational mixing = 3, 4,5,6 = previous strategies with elitism",
         "adult_sel_strat" : 4,
         "adult_sel_strat_settings" : {
-            "children_count" :85,
+            "children_count" :8,
             "adult_preserve_count" : 10, "//" : "appliable in case of generational mixing"
         },
 
@@ -33,7 +33,7 @@
     "project_settings" : {
         "one_max" : {
             "vector_size" : 40,
-            "target_vector" : 4968887813905712796, "4968887813905712796":""
+            "target_vector" : 0, "4968887813905712796":""
         },
         "lolz" : {
             "vector_size" : 40,
@@ -46,5 +46,5 @@
         }
     },
 
-    "seed" : 4
+    "seed" : 1
 }

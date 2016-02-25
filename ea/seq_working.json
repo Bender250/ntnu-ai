@@ -40,9 +40,9 @@
             "z" : 21
         },
         "sequences" : {
-            "just_local" : false,
-            "symbols_count" : 37,
-            "expected_length" : 80
+            "just_local" : true,
+            "symbols_count" : 29,
+            "expected_length" : 500
         }
     },
 

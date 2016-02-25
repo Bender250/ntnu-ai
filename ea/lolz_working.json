@@ -37,7 +37,7 @@
         },
         "lolz" : {
             "vector_size" : 40,
-            "z" : 21
+            "z" : 30
         },
         "sequences" : {
             "just_local" : false,
@@ -46,5 +46,5 @@
         }
     },
 
-    "seed" : 12
+    "seed" : 1
 }

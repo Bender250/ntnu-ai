@@ -40,7 +40,7 @@ uint64_t Sequences::fitness_length_global() const
         }
 
     }
-    return (collisions == 0) ? _genotype.size() : (_genotype.size() / collisions); //TODO think, if I can calculate something more interesting
+    return (collisions == 0) ? _genotype.size() : (_genotype.size() / (collisions+1)); //TODO think, if I can calculate something more interesting
 }
 
 uint64_t Sequences::fitness_length_local() const
@@ -53,7 +53,7 @@ uint64_t Sequences::fitness_length_local() const
                 ++collisions;
         }
     }
-    return (collisions == 0) ? _genotype.size() : (_genotype.size() / collisions);
+    return (collisions == 0) ? _genotype.size() : (_genotype.size() / (collisions+1));
 }
 
 void Sequences::mutate()
