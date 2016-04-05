@@ -104,7 +104,6 @@ void MainWindow::paintEvent(QPaintEvent *)
     step();
     if (_steps > 60) {
         _timer.setInterval(100000);
-        // todo print results
         return;
     }
 }

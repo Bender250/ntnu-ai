@@ -35,14 +35,14 @@ public:
     Flatland(int seed = 0) {
         std::mt19937 randomness(seed);
         std::bernoulli_distribution third(1.0/3.0);
-        for (std::size_t i = 0; i < SIZE; ++i) {
-            for (std::size_t j = 0; j < SIZE; ++j) {
+        for (auto &i : _f) {
+            for (auto &j : i) {
                 if (third(randomness)) {
-                    _f[j][i] = FOOD;
+                    j = FOOD;
                 } else  if (third(randomness)) {
-                    _f[j][i] = POISSON;
+                    j = POISSON;
                 } else {
-                    _f[j][i] = EMPTY;
+                    j = EMPTY;
                 }
             }
         }
