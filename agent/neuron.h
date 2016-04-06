@@ -16,6 +16,7 @@ public: // no care about black boxing (whups)
     Neuron(const uint64_t &connections);
 
     float eval(std::vector<float> const& inputs) const;
+    float eval(const std::vector<float> &inputs, const uint64_t &i) const;
     float fast_sigmoid(const float& x) const;
 };
 

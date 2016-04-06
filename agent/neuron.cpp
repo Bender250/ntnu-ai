@@ -17,6 +17,11 @@ float Neuron::eval(const std::vector<float> &inputs) const
     return result; // fast_sigmoid(result)?
 }
 
+float Neuron::eval(const std::vector<float> &inputs, uint64_t const& i) const
+{
+    return inputs[i]*_w[0]; // fast_sigmoid(result)?
+}
+
 float Neuron::fast_sigmoid(const float& x) const {
     return x / (1 + std::abs(x));
 }

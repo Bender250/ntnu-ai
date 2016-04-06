@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="flatland" native="true">
+   <widget class="Visualiser" name="flatland" native="true">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -364,9 +364,6 @@
      </item>
     </layout>
    </widget>
-   <zorder>flatland</zorder>
-   <zorder>verticalLayoutWidget</zorder>
-   <zorder>label</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -389,6 +386,14 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>Visualiser</class>
+   <extends>QWidget</extends>
+   <header>visualiser.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

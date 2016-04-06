@@ -34,12 +34,28 @@ Individual::Individual()
 void Individual::eval_step()
 {
     std::vector<float> inputs;
+    Surrounding s = _f.getSurrounding();
+    inputs.push_back(static_cast<int>(s._l) - 1);
+    inputs.push_back(static_cast<int>(s._f) - 1);
+    inputs.push_back(static_cast<int>(s._r) - 1);
+
+    bool is_first = true;
+
 
     for (Layer const& l : _ann) {
         std::vector<float> outputs;
 
-        for (Neuron const& n : l._v) {
-            outputs.push_back(n.eval(inputs));
+        if (is_first) {
+            uint64_t i = 0;
+            for (Neuron const& n : l._v) {
+                outputs.push_back(n.eval(inputs, i));
+                ++i;
+            }
+            is_first = false;
+        } else {
+            for (Neuron const& n : l._v) {
+                outputs.push_back(n.eval(inputs));
+            }
         }
 
         inputs = outputs;

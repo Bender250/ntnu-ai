@@ -18,7 +18,8 @@ SOURCES += main.cpp\
         evolution.cpp\
         population.cpp \
         individual.cpp \
-        neuron.cpp
+        neuron.cpp \
+    visualiser.cpp
 
 HEADERS += mainwindow.h \
         settings.h\
@@ -26,7 +27,8 @@ HEADERS += mainwindow.h \
         population.h \
         individual.h \
         neuron.h \
-    flatland.h
+    flatland.h \
+    visualiser.h
 
 FORMS    += mainwindow.ui
 

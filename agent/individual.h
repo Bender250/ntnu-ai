@@ -20,7 +20,7 @@ private:
     uint64_t _poisson_counter;
     void eval_step();
 
-    friend class MainWindow;
+    friend class Visualiser;
 public:
 
     Individual();

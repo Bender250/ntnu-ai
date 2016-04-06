@@ -6,7 +6,7 @@
 #include "settings.h"
 
 enum Position {
-    EMPTY, FOOD, POISSON
+    POISSON, EMPTY, FOOD
 };
 
 enum Orientation {
@@ -108,9 +108,9 @@ public:
             break;
         }
 
-        Position p = _f[_c._y][_c._y];
+        Position p = _f[_c._y][_c._x];
 
-        _f[_c._y][_c._y] = EMPTY;
+        _f[_c._y][_c._x] = EMPTY;
 
         return p;
     }
@@ -122,6 +122,10 @@ public:
     Position getPosition(uint64_t const& i, uint64_t const& j) const {
         return _f[i][j];
     }
+    Coordinates getC() const {
+        return _c;
+    }
 };
 
 #endif // FLATLAND_H
+
