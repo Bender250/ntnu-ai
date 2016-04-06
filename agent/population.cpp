@@ -274,6 +274,10 @@ void Population::parent_selection_rank()
     std::vector<uint64_t> stacked_fitness;
 
     std::sort(_genome.begin(), _genome.end(), _increasing_comparator);
+    while (_genome[_genome.size() - 1]->getFitness() < 0 && _genome.size() > 2) {
+        _genome.pop_back();
+    }
+
     stacked_fitness.push_back(1);
     for (uint64_t i = 1; i < _genome.size(); ++i) {
         stacked_fitness.push_back(i + stacked_fitness[i - 1] + 1);
@@ -288,6 +292,26 @@ void Population::parent_selection_rank()
         _parents.push_back(par);
     }
 }
+
+/*void Population::parent_selection_rank()
+{
+    std::vector<uint64_t> stacked_fitness;
+
+    std::sort(_genome.begin(), _genome.end(), _increasing_comparator);
+    stacked_fitness.push_back(1);
+    for (uint64_t i = 1; i < _genome.size(); ++i) {
+        stacked_fitness.push_back(i + stacked_fitness[i - 1] + 1);
+    }
+
+    std::uniform_int_distribution<uint64_t> rnd_int(0, stacked_fitness[stacked_fitness.size() - 1]);
+    for (uint64_t i = 0; i < Settings::inst()->_parent_count; ++i) {
+        uint64_t r = rnd_int(Settings::inst()->_randomness_source);
+        uint64_t par = 0;
+        while (par < stacked_fitness.size() && r > stacked_fitness[par])
+            ++par;
+        _parents.push_back(par);
+    }
+}*/
 
 void Population::parent_selection_deterministic_uniform()
 {

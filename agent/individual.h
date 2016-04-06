@@ -32,6 +32,7 @@ public:
     void mutate();
     std::unique_ptr<Individual> cross_over(const std::unique_ptr<Individual> &in) const;
     std::unique_ptr<Individual> get_copy() const;
+    void print() const;
 };
 
 #endif // INDIVIDUAL_H

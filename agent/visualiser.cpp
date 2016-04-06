@@ -51,16 +51,16 @@ void Visualiser::draw_agent(const Coordinates& c, QPainter &p) const
     // direction
     switch (c._o) {
     case UP:
-        p.drawLine(QPoint(index_to_pos(c._x), index_to_pos(c._y)), QPoint(index_to_pos(c._x) + 25, index_to_pos(c._y)));
-        break;
-    case RIGHT:
         p.drawLine(QPoint(index_to_pos(c._x), index_to_pos(c._y)), QPoint(index_to_pos(c._x), index_to_pos(c._y) + 25));
         break;
+    case RIGHT:
+        p.drawLine(QPoint(index_to_pos(c._x), index_to_pos(c._y)), QPoint(index_to_pos(c._x) + 25, index_to_pos(c._y)));
+        break;
     case BOTTOM:
-        p.drawLine(QPoint(index_to_pos(c._x), index_to_pos(c._y)), QPoint(index_to_pos(c._x) - 25, index_to_pos(c._y)));
+        p.drawLine(QPoint(index_to_pos(c._x), index_to_pos(c._y)), QPoint(index_to_pos(c._x), index_to_pos(c._y) - 25));
         break;
     case LEFT:
-        p.drawLine(QPoint(index_to_pos(c._x), index_to_pos(c._y)), QPoint(index_to_pos(c._x), index_to_pos(c._y) - 25));
+        p.drawLine(QPoint(index_to_pos(c._x), index_to_pos(c._y)), QPoint(index_to_pos(c._x) - 25, index_to_pos(c._y)));
         break;
     default:
         break;
@@ -79,15 +79,16 @@ void Visualiser::paintEvent(QPaintEvent *)
     p.setPen(Qt::black);
 
     if (_moves_per_sec > 0) {
-        _timer.setInterval(1/_moves_per_sec);
+        _timer.setInterval(1000/_moves_per_sec);
     } else {
-        _timer.setInterval(100000);
+        _timer.setInterval(10000);
     }
 
     draw_flatland(p);
     step();
     if (_steps > 60) {
-        _timer.setInterval(100000);
+        _timer.setInterval(1000000);
+        _i->print();
         return;
     }
 }

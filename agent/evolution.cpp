@@ -72,6 +72,7 @@ void Evolution::run()
             current = _p.evaluate();
             update_stats(current);
             _p.log();
+            ++Settings::inst()->_current_gen;
         }
     }
     else {
@@ -81,6 +82,7 @@ void Evolution::run()
             update_stats(current);
             is_fitnes_below = (current.max < Settings::inst()->_fitness);
             _p.log();
+            ++Settings::inst()->_current_gen;
         }
     }
     finalize_stats();

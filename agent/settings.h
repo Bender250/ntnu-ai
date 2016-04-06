@@ -41,6 +41,8 @@ public:
     uint64_t _generations = 100;
     float _fitness = 0.9;
 
+    uint64_t _current_gen = 0;
+
     Adult_sel_strat _adult_sel_strat = FULL_GEN_REPLACE;
     uint64_t _children_count = 20;
     uint64_t _adult_preserve_count = 10;
@@ -57,6 +59,7 @@ public:
     /////////////////////////////////////// OTHER
     std::mt19937 _randomness_source; //little messy this class purpose
     std::ofstream _log;
+    uint64_t _seed = 0;
 
     static Settings* inst() {
         if (!_i) {
@@ -97,7 +100,8 @@ public:
             break;
         }
 
-        _randomness_source.seed(jsontree.get<uint64_t>("seed"));
+        _seed = jsontree.get<uint64_t>("seed");
+        _randomness_source.seed(_seed);
         _log.open("../log.txt");
     }
 };
