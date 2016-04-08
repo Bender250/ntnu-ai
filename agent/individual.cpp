@@ -4,7 +4,7 @@ Individual::Individual() : _food_counter(0), _poisson_counter(0)
 {
     Layer first;
     for (uint64_t i = 0; i < 3; ++i) {
-        first._v.push_back(Neuron(1)); // 1: input is directly connected to sensors
+        first._v.push_back(Neuron(1, 1)); // 1: input is directly connected to sensors
     }
     _ann.push_back(first);
 
@@ -41,9 +41,9 @@ void Individual::eval_step()
 {
     std::vector<float> inputs;
     Surrounding s = _f.getSurrounding();
-    inputs.push_back(static_cast<int>(s._l) - 0.9);
-    inputs.push_back(static_cast<int>(s._f) - 0.9);
-    inputs.push_back(static_cast<int>(s._r) - 0.9);
+    inputs.push_back(static_cast<int>(s._l) - 1);
+    inputs.push_back(static_cast<int>(s._f) - 1);
+    inputs.push_back(static_cast<int>(s._r) - 1);
 
     bool is_first = true;
 
@@ -67,10 +67,12 @@ void Individual::eval_step()
         inputs = outputs;
     }
 
+    inputs[1] += 0.2;
+
     uint64_t index = std::distance(inputs.begin(),
                                    std::max_element(inputs.begin(), inputs.end()));
 
-    if (inputs[index] > 0) {
+    //if (inputs[index] > 0) {
         Position p = _f.move_agent(index);
         switch (p) {
         case FOOD:
@@ -82,32 +84,55 @@ void Individual::eval_step()
         default:
             break;
         }
-    }
+    //}
     // else do nothing
 }
 
 float Individual::evaluate_fitness()
 {
-    _food_counter = 0;
-    _poisson_counter = 0;
-    if (Settings::inst()->_seed == 0) {
-        _f = Flatland();
-    } else if (Settings::inst()->_seed < 10 ) {
-        _f = Flatland(Settings::inst()->_current_gen / 10);
-    } else {
-        std::uniform_int_distribution<uint64_t> rnd_int(0, 0xFFFFFFFFFFFFFFFF);
-        _f = Flatland(rnd_int(Settings::inst()->_randomness_source));
-    }
-
-    for (uint64_t i = 0; i < 60; ++i) {
-        eval_step();
-    }
-
     const float food_weight = 1;
     const float poisson_weight = -5;
 
-    float _fitness = ((_food_counter * food_weight) + (_poisson_counter * poisson_weight)) / (60 * food_weight);
-    return _fitness;
+    if (Settings::inst()->_rep_per_gen == 1) {
+        _food_counter = 0;
+        _poisson_counter = 0;
+        if (Settings::inst()->_seed == 0) {
+            _f = Flatland();
+        } else if (Settings::inst()->_seed < 10 ) {
+            _f = Flatland(Settings::inst()->_current_gen / 10);
+        } else {
+            std::uniform_int_distribution<uint64_t> rnd_int(0, 0xFFFFFFFFFFFFFFFF);
+            _f = Flatland(rnd_int(Settings::inst()->_randomness_source));
+        }
+
+        for (uint64_t i = 0; i < 60; ++i) {
+            eval_step();
+        }
+
+        float _fitness = ((_food_counter * food_weight) + (_poisson_counter * poisson_weight)) / (60 * food_weight);
+        return _fitness;
+    } else {
+        _fitness = 0;
+        for (uint64_t i = 0; i < Settings::inst()->_rep_per_gen; ++i) {
+            _food_counter = 0;
+            _poisson_counter = 0;
+            if (Settings::inst()->_seed == 0) {
+                _f = Flatland(i);
+            } else if (Settings::inst()->_seed < 10 ) {
+                _f = Flatland((Settings::inst()->_current_gen / 10)*(i+1));
+            } else {
+                std::uniform_int_distribution<uint64_t> rnd_int(0, 0xFFFFFFFFFFFFFFFF);
+                _f = Flatland(rnd_int(Settings::inst()->_randomness_source));
+            }
+
+            for (uint64_t i = 0; i < 60; ++i) {
+                eval_step();
+            }
+
+            _fitness += ((_food_counter * food_weight) + (_poisson_counter * poisson_weight));
+        }
+        return _fitness/Settings::inst()->_rep_per_gen;
+    }
 }
 
 void Individual::mutate()

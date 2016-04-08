@@ -8,6 +8,13 @@ Neuron::Neuron(const uint64_t &connections)
     }
 }
 
+Neuron::Neuron(const uint64_t &connections, const float &weights)
+{
+    for (uint64_t i = 0; i < connections; ++i) {
+        _w.push_back(weights);
+    }
+}
+
 float Neuron::eval(const std::vector<float> &inputs) const
 {
     float result = 0;

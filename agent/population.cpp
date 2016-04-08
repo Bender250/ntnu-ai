@@ -374,7 +374,7 @@ Stats Population::evaluate()
 
 void Population::log() const
 {
-    Settings::inst()->_log << _current_gen;
+    Settings::inst()->_log << std::endl << _current_gen;
     Settings::inst()->_log << ";" << _current.min;
     Settings::inst()->_log << ";" << _current.max;
     Settings::inst()->_log << ";" << _current.average;

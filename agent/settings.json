@@ -1,6 +1,6 @@
 {
     "population" : {
-        "size" : 10,
+        "size" : 20,
         "parent_count" : 4
     },
 
@@ -14,10 +14,10 @@
             "generations" : 1000
         },
         "//" : "strategies: full gen replacement = 1, over production = 2, generational mixing = 3, 4,5,6 = previous strategies with elitism",
-        "adult_sel_strat" : 6,
+        "adult_sel_strat" : 1,
         "adult_sel_strat_settings" : {
-            "children_count" : 10,
-            "adult_preserve_count" : 0, "//" : "appliable in case of generational mixing"
+            "children_count" : 20,
+            "adult_preserve_count" : 2, "//" : "appliable in case of generational mixing"
         },
 
         "//" : "strategies: fitness proportionate = 1, sigma scaling = 2, tournament selection = 3, boltzmann selection = 4, rank selection = 5, deterministic uniform selection = 6, stochastic uniform selection = 7",
@@ -31,5 +31,7 @@
         "internal_layers_count" : 0
     },
 
-    "seed" : 13
+    "rep_per_gen" : 5,
+
+    "seed" : 1
 }

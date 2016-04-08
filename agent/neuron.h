@@ -14,6 +14,7 @@ public: // no care about black boxing (whups)
     weights _w;
     Neuron() = default;
     Neuron(const uint64_t &connections);
+    Neuron(const uint64_t &connections, const float &weights);
 
     float eval(std::vector<float> const& inputs) const;
     float eval(const std::vector<float> &inputs, const uint64_t &i) const;

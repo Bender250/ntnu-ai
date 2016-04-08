@@ -41,6 +41,8 @@ public:
     uint64_t _generations = 100;
     float _fitness = 0.9;
 
+    uint64_t _rep_per_gen = 1;
+
     uint64_t _current_gen = 0;
 
     Adult_sel_strat _adult_sel_strat = FULL_GEN_REPLACE;
@@ -90,6 +92,8 @@ public:
         _stop_by_gen = jsontree.get<bool>("evolution.stop_by_gen");
         _generations = jsontree.get<uint64_t>("evolution.stop.generations");
         _fitness = jsontree.get<float>("evolution.stop.fitness");
+
+        _rep_per_gen = jsontree.get<uint64_t>("rep_per_gen");
 
         _internal_layers_count = jsontree.get<uint64_t>("network.internal_layers_count");
         switch (_internal_layers_count) {
