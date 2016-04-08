@@ -18,8 +18,8 @@ Individual::Individual() : _food_counter(0), _poisson_counter(0)
 
     for (uint64_t i = 1; i < Settings::inst()->_internal_layers_sizes.size(); ++i) {
         Layer l;
-        for (uint64_t i = 0; i < Settings::inst()->_internal_layers_sizes[i]; ++i) {
-            l._v.push_back(Neuron(Settings::inst()->_internal_layers_sizes[i-1]));
+        for (uint64_t j = 0; j < Settings::inst()->_internal_layers_sizes[i]; ++j) {
+            l._v.push_back(Neuron(Settings::inst()->_internal_layers_sizes[j-1]));
         }
         _ann.push_back(l);
     }
@@ -109,7 +109,7 @@ float Individual::evaluate_fitness()
             eval_step();
         }
 
-        float _fitness = ((_food_counter * food_weight) + (_poisson_counter * poisson_weight)) / (60 * food_weight);
+        _fitness = ((_food_counter * food_weight) + (_poisson_counter * poisson_weight)) / (60 * food_weight);
         return _fitness;
     } else {
         _fitness = 0;
@@ -125,7 +125,7 @@ float Individual::evaluate_fitness()
                 _f = Flatland(rnd_int(Settings::inst()->_randomness_source));
             }
 
-            for (uint64_t i = 0; i < 60; ++i) {
+            for (uint64_t j = 0; j < 60; ++j) {
                 eval_step();
             }
 
