@@ -58,8 +58,8 @@ void Visualiser::paintEvent(QPaintEvent *)
     draw_land(p);
     step();
     if (_steps > 600) {
-        _timer.setInterval(1000000);
         _i->print();
+        _timer.setInterval(1000000);
         return;
     }
 }

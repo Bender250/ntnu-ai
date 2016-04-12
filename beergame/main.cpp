@@ -8,7 +8,7 @@ Settings *Settings::_i = 0;
 
 int main(int argc, char *argv[])
 {
-    std::string config = "../agent/settings.json";
+    std::string config = "../beergame/settings.json";
     if (argc > 1) {
         config = argv[1];
     }

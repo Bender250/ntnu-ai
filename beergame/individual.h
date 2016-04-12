@@ -24,7 +24,7 @@ private:
 public:
 
     Individual();
-    Individual(std::vector<Layer> ann) : _ann(ann) {}
+    Individual(std::vector<Layer> ann) : _ann(ann), _object_counter() {}
     float getFitness() {
         return _fitness;
     }

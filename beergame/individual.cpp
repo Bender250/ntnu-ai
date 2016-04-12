@@ -43,8 +43,7 @@ void Individual::eval_step()
 
 float Individual::evaluate_fitness()
 {
-    std::uniform_int_distribution<uint64_t> rnd_int(0, 0xFFFFFFFFFFFFFFFF);
-    _l = Beergame_land(rnd_int(Settings::inst()->_randomness_source));
+    _l = Beergame_land(Settings::inst()->_current_gen);
     _fitness = 0;
     for (uint64_t& o : _object_counter) {
         o = 0;
@@ -56,19 +55,19 @@ float Individual::evaluate_fitness()
 
     // calc fitness
     const float penalty = 0.5;
-    _fitness += 6         * _object_counter[0];
-    _fitness += 5         * _object_counter[1];
+    _fitness += 1         * _object_counter[0];
+    _fitness += 1         * _object_counter[1];
     _fitness -= 4*penalty * _object_counter[2];
     _fitness -= 3*penalty * _object_counter[3];
     _fitness -= 2*penalty * _object_counter[4];
     _fitness -= 1*penalty * _object_counter[5];
-    _fitness -= 10*penalty * _object_counter[6];
+    _fitness -= 10*penalty * _object_counter[6]; //partially above
     _fitness += 1         * _object_counter[7];
     _fitness += 2         * _object_counter[8];
     _fitness += 3         * _object_counter[9];
     _fitness += 4         * _object_counter[10];
-    _fitness -= 5*penalty * _object_counter[11];
-    _fitness -= 6*penalty * _object_counter[12];
+    _fitness -= 5*penalty * _object_counter[11]; // impossible
+    _fitness -= 6*penalty * _object_counter[12]; // impossible
 
     return _fitness;
 }
@@ -105,5 +104,18 @@ void Individual::print() const
             std::cout << std::endl;
         }
     }
-    // text as well?
+    std::cout << "Collected:" << std::endl;
+    std::cout << "-6: " << _object_counter[0] << std::endl;
+    std::cout << "-5: " << _object_counter[1] << std::endl;
+    std::cout << "-4: " << _object_counter[2] << std::endl;
+    std::cout << "-3: " << _object_counter[3] << std::endl;
+    std::cout << "-2: " << _object_counter[4] << std::endl;
+    std::cout << "-1: " << _object_counter[5] << std::endl;
+    std::cout << "partially fallen: " << _object_counter[6] << std::endl;
+    std::cout << "+1: " << _object_counter[7] << std::endl;
+    std::cout << "+2: " << _object_counter[8] << std::endl;
+    std::cout << "+3: " << _object_counter[9] << std::endl;
+    std::cout << "+4: " << _object_counter[10] << std::endl;
+    std::cout << "+5: " << _object_counter[11] << std::endl;
+    std::cout << "+6: " << _object_counter[12] << std::endl;
 }
