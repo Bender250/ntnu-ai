@@ -20,10 +20,11 @@ private:
     float _prev;
     float _time;
 
+    float sigmoid(const float &x) const;
 public:
     Neuron(const uint64_t &connections);
 
-    float eval(std::vector<float> const& inputs);
+    float eval(std::vector<float> const& inputs, float layer_prev);
     float fast_sigmoid(const float& x) const;
     void mutate();
     void print() const;

@@ -16,13 +16,25 @@ void Visualiser::draw_land(QPainter &p) const
     p.setPen(Qt::red);
     if (_i->_l.getX() <= 25) {
         QRect r(QPoint(40*_i->_l.getX(), 40*14), QPoint(40*(_i->_l.getX() + 5), 40*15));
-        p.drawRect(r);
+        p.fillRect(r, Qt::red);
     } else {
         QRect r1(QPoint(40*_i->_l.getX(), 40*14), QPoint(40*30, 40*15));
         QRect r2(QPoint(40*0, 40*14), QPoint(40*((_i->_l.getX() + 5) % 30), 40*15));
-        p.drawRect(r1);
-        p.drawRect(r2);
+        p.fillRect(r1, Qt::red);
+        p.fillRect(r2, Qt::red);
     }
+
+    p.setPen(Qt::black);
+    if (_i->_l.getF().x <= 25) {
+        QRect r(QPoint(40*_i->_l.getF().x, 40*(14 - _i->_l.getF().y)), QPoint(40*(_i->_l.getF().x + _i->_l.getF().l), 40*((14 - _i->_l.getF().y) + 1)));
+        p.fillRect(r, Qt::black);
+    } else {
+        QRect r1(QPoint(40*_i->_l.getF().x, 40*(14 - _i->_l.getF().y)), QPoint(40*30, 40*((14 - _i->_l.getF().y) + 1)));
+        QRect r2(QPoint(40*0, 40*(14 - _i->_l.getF().y)), QPoint(40*((_i->_l.getF().x + _i->_l.getF().l) % 30), 40*((14 - _i->_l.getF().y) + 1)));
+        p.fillRect(r1, Qt::black);
+        p.fillRect(r2, Qt::black);
+    }
+
 }
 
 
@@ -45,7 +57,7 @@ void Visualiser::paintEvent(QPaintEvent *)
 
     draw_land(p);
     step();
-    if (_steps > 60) {
+    if (_steps > 600) {
         _timer.setInterval(1000000);
         _i->print();
         return;

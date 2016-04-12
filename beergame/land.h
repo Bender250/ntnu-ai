@@ -36,6 +36,7 @@ private:
     }
 
     void generate_new_object() {
+        std::uniform_int_distribution<uint64_t> gen(1, 6);
         _f.x = _gen(_randomness) % X_SIZE;
         _f.y = Y_SIZE - 1;
         _f.l = (_gen(_randomness) % 6) + 1;
@@ -57,9 +58,9 @@ private:
         if (catched) {
             return object_len;
         } else if (partially_above) {
-            return -object_len;
-        } else {
             return 0;
+        } else {
+            return -object_len;
         }
     }
 
@@ -98,6 +99,9 @@ public:
     }
     uint64_t getX() const {
         return _x;
+    }
+    Falling_object getF() const {
+        return _f;
     }
 };
 

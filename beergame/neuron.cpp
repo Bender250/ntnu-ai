@@ -1,6 +1,6 @@
 #include "neuron.h"
 
-Neuron::Neuron(const uint64_t &connections)
+Neuron::Neuron(const uint64_t &connections) : _prev(0.0)
 {
     std::uniform_real_distribution<float> rnd_flt1(-5.0, 5.0);
     _self_w = rnd_flt1(Settings::inst()->_randomness_source);
@@ -20,25 +20,24 @@ Neuron::Neuron(const uint64_t &connections)
     }
 }
 
-float Neuron::eval(const std::vector<float> &inputs)
+float Neuron::eval(const std::vector<float> &inputs, float layer_prev)
 {
-    float result = 0;
+    float result = _bias;
     for (uint64_t i = 0; i < inputs.size(); ++i) {
         result += inputs[i]*_w[i];
     }
-    // result is equal to s_i without I_i
-    result += _bias; // bias is part of I_i
+    // result is equal to s_i without I_i, that is sum of really ALL inputs
 
-    result = fast_sigmoid(result);
+    result -= _self_w * _prev;
+    result += _layer_w * layer_prev;
 
-    result -= _prev;
-
-    _prev = result;
+    _prev = result / _time;
+    result = sigmoid(result);
     return result; // fast_sigmoid(result)?
 }
 
-float Neuron::fast_sigmoid(const float& x) const {
-    return x / (1 + std::abs(x));
+float Neuron::sigmoid(const float& x) const {
+    return x / (1 + std::exp(-(x*_gain)));
 }
 
 void Neuron::mutate()

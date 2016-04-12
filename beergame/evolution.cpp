@@ -62,6 +62,8 @@ void Evolution::print_fitnesses() const
 
     Settings::inst()->_log << "Fitness avg:" << _global_average.average << std::endl;
     std::cout << "Fitness avg:" << _global_average.average << std::endl;
+
+    _p.getBestIndividual()->print();
 }
 
 void Evolution::run()
