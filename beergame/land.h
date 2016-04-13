@@ -68,15 +68,15 @@ private:
         bool catched = (object_len < 5);
         bool partially_above = false;
 
-        for (uint64_t i = 0; i < 5; ++i) {
+        /*for (uint64_t i = 0; i < 5; ++i) { // wrong but somehow working
             catched &= is_object_above((_x + i) % X_SIZE);
             partially_above |= is_object_above((_x + i) % X_SIZE);
-        }
+        }*/
 
-        /*for (uint64_t i = 0; i < _f.l; ++i) {
+        for (uint64_t i = 0; i < _f.l; ++i) {
             catched &= is_pad_below((_f.x + i) % X_SIZE);
             partially_above |= is_pad_below((_f.x + i) % X_SIZE);
-        }*/
+        }
 
         generate_new_object();
 

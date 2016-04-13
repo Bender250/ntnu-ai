@@ -6,12 +6,12 @@
 
     "evolution" : {
         "mutation_probability" : 0.5,
-        "crossover_probability" : 0,
+        "crossover_probability" : 0.05,
         "crossover_position_random" : true,
         "stop_by_gen" : true,
         "stop" : {
             "fitness" : 1,
-            "generations" : 1000
+            "generations" : 100
         },
         "//" : "strategies: full gen replacement = 1, over production = 2, generational mixing = 3, 4,5,6 = previous strategies with elitism",
         "adult_sel_strat" : 3,
@@ -31,7 +31,7 @@
         "internal_layers_count" : 0
     },
 
-    "rep_per_gen" : 1,
+    "rep_per_gen" : 100,
 
     "seed" : 1
 }

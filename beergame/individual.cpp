@@ -15,6 +15,11 @@ Individual::Individual() : _fitness(0)
     _ann.push_back(last);
 }
 
+std::vector<Layer> Individual::getAnn() const
+{
+    return _ann;
+}
+
 void Individual::eval_step()
 {
     std::vector<float> inputs = _l.get_above();
@@ -43,31 +48,34 @@ void Individual::eval_step()
 
 float Individual::evaluate_fitness()
 {
-    _l = Beergame_land(Settings::inst()->_current_gen);
     _fitness = 0;
-    for (uint64_t& o : _object_counter) {
-        o = 0;
-    }
 
-    for (uint64_t step = 0; step < 600; ++step) {
-        eval_step();
-    }
+    for (uint64_t i = 0; i < Settings::inst()->_rep_per_gen; ++i) {
+        _l = Beergame_land(Settings::inst()->_current_gen * Settings::inst()->_rep_per_gen + i);
+        for (uint64_t& o : _object_counter) {
+            o = 0;
+        }
 
-    // calc fitness
-    const float penalty = 0.5;
-    _fitness += 1         * _object_counter[0];
-    _fitness += 1         * _object_counter[1];
-    _fitness -= 4*penalty * _object_counter[2];
-    _fitness -= 3*penalty * _object_counter[3];
-    _fitness -= 2*penalty * _object_counter[4];
-    _fitness -= 1*penalty * _object_counter[5];
-    _fitness -= 10*penalty * _object_counter[6]; //partially above
-    _fitness += 1         * _object_counter[7];
-    _fitness += 2         * _object_counter[8];
-    _fitness += 3         * _object_counter[9];
-    _fitness += 4         * _object_counter[10];
-    _fitness -= 5*penalty * _object_counter[11]; // impossible
-    _fitness -= 6*penalty * _object_counter[12]; // impossible
+        for (uint64_t step = 0; step < 600; ++step) {
+            eval_step();
+        }
+
+        // calc fitness
+        const float penalty = 5;
+        _fitness += 1         * _object_counter[0];
+        _fitness += 1         * _object_counter[1];
+        _fitness -= 4*penalty * _object_counter[2];
+        _fitness -= 3*penalty * _object_counter[3];
+        _fitness -= 2*penalty * _object_counter[4];
+        _fitness -= 1*penalty * _object_counter[5]; // impossible
+        _fitness -= 20*penalty * _object_counter[6]; //partially above
+        _fitness += 1         * _object_counter[7];
+        _fitness += 2         * _object_counter[8];
+        _fitness += 3         * _object_counter[9];
+        _fitness += 4         * _object_counter[10];
+        _fitness -= 5*penalty * _object_counter[11]; // impossible
+        _fitness -= 6*penalty * _object_counter[12]; // impossible
+    }
 
     return _fitness;
 }
@@ -86,8 +94,8 @@ void Individual::mutate()
 // TODO, but I don't expect to use mutation, it's too difficult
 std::unique_ptr<Individual> Individual::cross_over(const std::unique_ptr<Individual> &in) const
 {
-    std::cerr << "Mutation is not implemented yet" << std::endl;
-    return std::unique_ptr<Individual>(new Individual());
+    std::vector<Layer> a = {_ann[0], in->getAnn()[1] };
+    return std::unique_ptr<Individual>(new Individual(a));
 }
 
 std::unique_ptr<Individual> Individual::get_copy() const
