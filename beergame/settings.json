@@ -5,7 +5,7 @@
     },
 
     "evolution" : {
-        "mutation_probability" : 0.5,
+        "mutation_probability" : 0.9,
         "crossover_probability" : 0.05,
         "crossover_position_random" : true,
         "stop_by_gen" : true,
@@ -31,7 +31,7 @@
         "internal_layers_count" : 0
     },
 
-    "rep_per_gen" : 100,
+    "rep_per_gen" : 10,
 
     "seed" : 1
 }

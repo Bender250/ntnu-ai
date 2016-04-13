@@ -61,18 +61,18 @@ float Individual::evaluate_fitness()
         }
 
         // calc fitness
-        const float penalty = 5;
+        const float penalty = 2;
         _fitness += 1         * _object_counter[0];
         _fitness += 1         * _object_counter[1];
-        _fitness -= 4*penalty * _object_counter[2];
-        _fitness -= 3*penalty * _object_counter[3];
-        _fitness -= 2*penalty * _object_counter[4];
+        _fitness -= 1*penalty * _object_counter[2];
+        _fitness -= 1*penalty * _object_counter[3];
+        _fitness -= 1*penalty * _object_counter[4];
         _fitness -= 1*penalty * _object_counter[5]; // impossible
-        _fitness -= 20*penalty * _object_counter[6]; //partially above
+        _fitness -= 10*penalty * _object_counter[6]; //partially above
         _fitness += 1         * _object_counter[7];
-        _fitness += 2         * _object_counter[8];
-        _fitness += 3         * _object_counter[9];
-        _fitness += 4         * _object_counter[10];
+        _fitness += 1         * _object_counter[8];
+        _fitness += 1         * _object_counter[9];
+        _fitness += 1         * _object_counter[10];
         _fitness -= 5*penalty * _object_counter[11]; // impossible
         _fitness -= 6*penalty * _object_counter[12]; // impossible
     }
