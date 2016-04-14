@@ -31,9 +31,9 @@ float Neuron::eval(const std::vector<float> &inputs, float layer_prev)
     result -= _self_w * _prev;
     result += _layer_w * layer_prev;
 
+    result = sigmoid(result);
     _prev += result / _time;
     _prev = std::min(_prev, (float) 5.0);
-    result = sigmoid(result);
     return result; // fast_sigmoid(result)?
 }
 

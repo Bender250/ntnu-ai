@@ -32,6 +32,7 @@
     },
 
     "rep_per_gen" : 10,
+    "final_regenerate" : true,
 
     "seed" : 11
 }

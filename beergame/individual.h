@@ -24,8 +24,11 @@ private:
 public:
 
     Individual();
-    Individual(std::vector<Layer> ann) : _ann(ann), _object_counter() {}
+    Individual(std::vector<Layer> ann) : _fitness(-INFINITY), _ann(ann), _object_counter() {}
     float getFitness() {
+        if (_fitness == -INFINITY)
+            evaluate_fitness();
+
         return _fitness;
     }
     float evaluate_fitness();

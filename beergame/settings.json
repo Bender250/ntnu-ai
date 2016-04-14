@@ -27,11 +27,13 @@
         }
     },
 
+    "pull" : false,
+
     "network" : {
         "internal_layers_count" : 0
     },
 
     "rep_per_gen" : 10,
 
-    "seed" : 1
+    "seed" : 8
 }

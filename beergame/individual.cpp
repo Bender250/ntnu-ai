@@ -40,7 +40,14 @@ void Individual::eval_step()
 
     dist = std::min(dist, (uint64_t) 4);
 
-    int collected = _l.step(d, dist);
+    int collected = NOTHING;
+
+    if (Settings::inst()->_pull && dist == 0) {
+            collected = _l.pull();
+    } else {
+        collected = _l.step(d, dist);
+    }
+
     if (collected != NOTHING) {
         ++_object_counter[collected + 6];
     }
@@ -67,9 +74,9 @@ float Individual::evaluate_fitness()
         _fitness -= 1*penalty * _object_counter[2];
         _fitness -= 1*penalty * _object_counter[3];
         _fitness -= 1*penalty * _object_counter[4];
-        _fitness -= 1*penalty * _object_counter[5]; // impossible
+        _fitness -= 1*penalty * _object_counter[5];
         _fitness -= 10*penalty * _object_counter[6]; //partially above
-        _fitness += 1         * _object_counter[7];
+        _fitness += 5        * _object_counter[7];
         _fitness += 1         * _object_counter[8];
         _fitness += 1         * _object_counter[9];
         _fitness += 1         * _object_counter[10];

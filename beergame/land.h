@@ -123,6 +123,15 @@ public:
         --_f.y;
         return res;
     }
+
+    int pull() {
+        _f.y = 0;
+        int res = resolve_falled_abject();
+
+        --_f.y;
+        return res;
+    }
+
     uint64_t getX() const {
         return _x;
     }

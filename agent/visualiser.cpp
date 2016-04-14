@@ -9,6 +9,11 @@ Visualiser::Visualiser(QWidget *parent) : QWidget(parent), _timer(this), _steps(
 void Visualiser::initiate(std::unique_ptr<Individual>& i)
 {
     _i = std::move(i);
+
+    if (Settings::inst()->_final_regenerate) {
+        std::uniform_int_distribution<uint64_t> rnd_int(0, 0xFFFFFFFFFFFFFFFF);
+        _i->regenerate_flatland(rnd_int(Settings::inst()->_randomness_source));
+    }
 }
 
 void Visualiser::draw_flatland(QPainter &p) const

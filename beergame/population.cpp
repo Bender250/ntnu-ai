@@ -15,7 +15,7 @@ uint64_t Population::getCurrent_gen() const
 
 void Population::fitness_testing()
 {
-    _current.max = 0;
+    _current.max = -INFINITY;
     _current.min = 1;
     _current.average = 0;
     for (auto &indiv : _genome) {

@@ -56,6 +56,7 @@ public:
     /////////////////////////////////////// ANN
     uint64_t _internal_layers_count = 1;
     std::vector<uint64_t> _internal_layers_sizes;
+    bool _pull = false;
     /////////////////////////////////////// \ANN
 
     /////////////////////////////////////// OTHER
@@ -88,6 +89,8 @@ public:
         if (_parent_sel_strat == TOURNAMENT) {
             _tournament_k = jsontree.get<uint64_t>("evolution.parent_sel_strat_settings.tournament_k");
         }
+
+        _pull = jsontree.get<bool>("pull");
 
         _stop_by_gen = jsontree.get<bool>("evolution.stop_by_gen");
         _generations = jsontree.get<uint64_t>("evolution.stop.generations");

@@ -34,6 +34,7 @@ Individual::Individual() : _food_counter(0), _poisson_counter(0)
             last._v.push_back(Neuron(3));
         }
     }
+    last._v[1]._bias = 0.2;
     _ann.push_back(last);
 }
 
@@ -67,25 +68,22 @@ void Individual::eval_step()
         inputs = outputs;
     }
 
-    inputs[1] += 0.2;
+    //inputs[1] += 0.2;
 
     uint64_t index = std::distance(inputs.begin(),
                                    std::max_element(inputs.begin(), inputs.end()));
 
-    //if (inputs[index] > 0) {
-        Position p = _f.move_agent(index);
-        switch (p) {
-        case FOOD:
-            ++_food_counter;
-            break;
-        case POISSON:
-            ++_poisson_counter;
-            break;
-        default:
-            break;
-        }
-    //}
-    // else do nothing
+    Position p = _f.move_agent(index);
+    switch (p) {
+    case FOOD:
+        ++_food_counter;
+        break;
+    case POISSON:
+        ++_poisson_counter;
+        break;
+    default:
+        break;
+    }
 }
 
 float Individual::evaluate_fitness()
@@ -170,4 +168,9 @@ void Individual::print() const
         }
     }
     std::cout << "Eaten: food: " << _food_counter << " poisson: " << _poisson_counter << std::endl;
+}
+
+void Individual::regenerate_flatland(uint64_t seed)
+{
+    _f = Flatland(seed);
 }

@@ -62,6 +62,7 @@ public:
     std::mt19937 _randomness_source; //little messy this class purpose
     std::ofstream _log;
     uint64_t _seed = 0;
+    bool _final_regenerate = true;
 
     static Settings* inst() {
         if (!_i) {
@@ -105,6 +106,7 @@ public:
         }
 
         _seed = jsontree.get<uint64_t>("seed");
+        _final_regenerate = jsontree.get<bool>("final_regenerate");
         _randomness_source.seed(_seed);
         _log.open("../log.txt");
     }
