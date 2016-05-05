@@ -26,13 +26,13 @@ private:
     float _crowding_distance;
 
 public:
-    Individual() : _fitness({0, 0}), _rank(0xFFFFFFFFFFFFFFFF) {
+    Individual() : _fitness({0, 0}), _rank(0xFFFFFFFFFFFFFFFF), _crowding_distance(0) {
         for (uint64_t i = 0; i < LENGTH; ++i) {
             _genome[i] = i;
         }
         std::shuffle(_genome.begin(), _genome.end(), Settings::inst()->_randomness_source);
     }
-    Individual(std::array<City, LENGTH> genome) : _genome(genome), _fitness({0, 0}), _rank(0xFFFFFFFFFFFFFFFF) {
+    Individual(std::array<City, LENGTH> genome) : _genome(genome), _fitness({0, 0}), _rank(0xFFFFFFFFFFFFFFFF), _crowding_distance(0) {
         for (uint64_t i = 0; i < LENGTH; ++i) {
             _genome[i] = i;
         }

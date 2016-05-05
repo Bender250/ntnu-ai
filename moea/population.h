@@ -35,43 +35,43 @@ private:
     void reproduction();
 
     struct {
-        bool operator ()(std::unique_ptr<Individual> &a, std::unique_ptr<Individual> &b) {
+        bool operator ()(std::unique_ptr<Individual> const &a, std::unique_ptr<Individual> const &b) {
             return a->dist_fitness() > b->dist_fitness();
         }
     } _decreasing_dist_comparator;
 
     struct {
-        bool operator ()(std::unique_ptr<Individual> &a, std::unique_ptr<Individual> &b) {
+        bool operator ()(std::unique_ptr<Individual> const &a, std::unique_ptr<Individual> const &b) {
             return a->cost_fitness() > b->cost_fitness();
         }
     } _decreasing_cost_comparator;
 
     struct {
-        bool operator ()(std::unique_ptr<Individual> &a, std::unique_ptr<Individual> &b) {
+        bool operator ()(std::unique_ptr<Individual> const &a, std::unique_ptr<Individual> const &b) {
             return a->dist_fitness() < b->dist_fitness();
         }
     } _increasing_dist_comparator;
 
     struct {
-        bool operator ()(std::unique_ptr<Individual> &a, std::unique_ptr<Individual> &b) {
+        bool operator ()(std::unique_ptr<Individual> const &a, std::unique_ptr<Individual> const &b) {
             return a->cost_fitness() < b->cost_fitness();
         }
     } _increasing_cost_comparator;
 
     // comparators based on rank
     struct {
-        bool operator ()(std::unique_ptr<Individual> &a, std::unique_ptr<Individual> &b) {
+        bool operator ()(std::unique_ptr<Individual> const &a, std::unique_ptr<Individual> const &b) {
             return a->getRank() < b->getRank();
         }
     } _increasing_rank_comparator;
     struct {
-        bool operator ()(std::unique_ptr<Individual> &a, std::unique_ptr<Individual> &b) {
+        bool operator ()(std::unique_ptr<Individual> const &a, std::unique_ptr<Individual> const &b) {
             return a->getRank() > b->getRank();
         }
     } _decreasing_rank_comparator;
 
     struct {
-        bool operator ()(std::unique_ptr<Individual> &a, std::unique_ptr<Individual> &b) {
+        bool operator ()(std::unique_ptr<Individual> const &a, std::unique_ptr<Individual> const &b) {
             if (a->getRank() == b->getRank()) {
                 return a->getCrowding_distance() > b->getCrowding_distance();
             } else {
@@ -80,7 +80,7 @@ private:
         }
     } _decreasing_total_comparator;
     struct {
-        bool operator ()(std::unique_ptr<Individual> &a, std::unique_ptr<Individual> &b) {
+        bool operator ()(std::unique_ptr<Individual> const &a, std::unique_ptr<Individual> const &b) {
             if (a->getRank() == b->getRank()) {
                 return a->getCrowding_distance() < b->getCrowding_distance();
             } else {

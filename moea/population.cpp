@@ -46,16 +46,18 @@ void Population::rank_evaluate()
     }
 }
 
+// TODO: randomly gives CD = infinity to few more individuals
 void Population::crowding_distance_evaluate()
 {
     // parent crowding distance evaluate
 
     //std::sort(_genome.begin(), _genome.end(), _increasing_cost_comparator); // should not be needed
-    std::sort(_genome.begin(), _genome.end(), _increasing_rank_comparator);
+    //   stable for holding cost sorted -> primary sorted by rank, secondary by cost
+    std::stable_sort(_genome.begin(), _genome.end(), _increasing_rank_comparator);
 
     // parents are already sorted by rank
     _genome[0]->setCrowding_distance(INFINITY);
-    for (uint64_t i = 1; i < _genome.size() - 2; ++i) {
+    for (uint64_t i = 1; i < _genome.size() - 1; ++i) {
         if (_genome[i]->getRank() != _genome[i+1]->getRank()) {
             _genome[i]->setCrowding_distance(INFINITY);
             _genome[i+1]->setCrowding_distance(INFINITY);
@@ -69,6 +71,7 @@ void Population::crowding_distance_evaluate()
                     * std::abs(_genome[i]->cost_fitness() - _genome[i-1]->cost_fitness());
             res += std::abs(_genome[i]->dist_fitness() - _genome[i+1]->dist_fitness())
                     * std::abs(_genome[i]->cost_fitness() - _genome[i+1]->cost_fitness());
+
             _genome[i]->setCrowding_distance(res);
         }
     }
