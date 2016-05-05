@@ -3,14 +3,16 @@
 
 Fitness Individual::evaluate_fitness()
 {
-    float cost = 0;
-    float dist = 0;
+    _fitness.cost = 0;
+    _fitness.dist = 0;
 
     for (uint64_t i = 0; i < _genome.size() - 1; ++i) {
-        cost += v.cost[_genome[i]][_genome[i+1]];
-        dist += v.dist[_genome[i]][_genome[i+1]];
+        uint64_t min = std::min(_genome[i], _genome[i+1]);
+        uint64_t max = std::max(_genome[i], _genome[i+1]);
+        _fitness.cost += v.cost[max][min];
+        _fitness.dist += v.dist[max][min];
     }
-    return Fitness { dist, cost };
+    return _fitness;
 }
 
 void Individual::mutate()

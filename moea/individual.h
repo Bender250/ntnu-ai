@@ -26,15 +26,25 @@ private:
     float _crowding_distance;
 
 public:
-    Individual() : _fitness({0, 0}), _rank(0xFFFFFFFFFFFFFFFF) {}
-    Individual(std::array<City, LENGTH> genome) : _genome(genome), _fitness({0, 0}), _rank(0xFFFFFFFFFFFFFFFF) {}
+    Individual() : _fitness({0, 0}), _rank(0xFFFFFFFFFFFFFFFF) {
+        for (uint64_t i = 0; i < LENGTH; ++i) {
+            _genome[i] = i;
+        }
+        std::shuffle(_genome.begin(), _genome.end(), Settings::inst()->_randomness_source);
+    }
+    Individual(std::array<City, LENGTH> genome) : _genome(genome), _fitness({0, 0}), _rank(0xFFFFFFFFFFFFFFFF) {
+        for (uint64_t i = 0; i < LENGTH; ++i) {
+            _genome[i] = i;
+        }
+        std::shuffle(_genome.begin(), _genome.end(), Settings::inst()->_randomness_source);
+    }
 
     Fitness evaluate_fitness();
     void mutate();
     std::unique_ptr<Individual> cross_over(const std::unique_ptr<Individual> &in) const;
     std::unique_ptr<Individual> get_copy() const;
 
-    float time_fitness() const {
+    float dist_fitness() const {
         return _fitness.dist;
     }
     float cost_fitness() const {

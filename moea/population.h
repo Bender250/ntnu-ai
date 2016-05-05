@@ -5,6 +5,9 @@
 #include <algorithm>
 #include <memory>
 
+#define QCUSTOMPLOT_USE_LIBRARY // TODO: is necessary?
+#include <qcustomplot.h>
+
 #include "individual.h"
 
 struct Stats {
@@ -33,15 +36,27 @@ private:
 
     struct {
         bool operator ()(std::unique_ptr<Individual> &a, std::unique_ptr<Individual> &b) {
-            return a->time_fitness() > b->time_fitness();
+            return a->dist_fitness() > b->dist_fitness();
         }
-    } _decreasing_time_comparator;
+    } _decreasing_dist_comparator;
 
     struct {
         bool operator ()(std::unique_ptr<Individual> &a, std::unique_ptr<Individual> &b) {
             return a->cost_fitness() > b->cost_fitness();
         }
     } _decreasing_cost_comparator;
+
+    struct {
+        bool operator ()(std::unique_ptr<Individual> &a, std::unique_ptr<Individual> &b) {
+            return a->dist_fitness() < b->dist_fitness();
+        }
+    } _increasing_dist_comparator;
+
+    struct {
+        bool operator ()(std::unique_ptr<Individual> &a, std::unique_ptr<Individual> &b) {
+            return a->cost_fitness() < b->cost_fitness();
+        }
+    } _increasing_cost_comparator;
 
     // comparators based on rank
     struct {
@@ -64,6 +79,15 @@ private:
             }
         }
     } _decreasing_total_comparator;
+    struct {
+        bool operator ()(std::unique_ptr<Individual> &a, std::unique_ptr<Individual> &b) {
+            if (a->getRank() == b->getRank()) {
+                return a->getCrowding_distance() < b->getCrowding_distance();
+            } else {
+                return a->getRank() < b->getRank();
+            }
+        }
+    } _increasing_total_comparator;
 
     void adult_selection_full_gen_replace_mod();
     void adult_selection_over_production_mod();
@@ -79,7 +103,7 @@ public:
     Stats evaluate();
     void log() const;
     void print_final_fitness() const;
-    void print_final_population() const;
+    void print_final_population(QCustomPlot *customPlot);
 };
 
 #endif // POPULATION_H

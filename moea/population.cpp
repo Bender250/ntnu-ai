@@ -15,25 +15,32 @@ uint64_t Population::getCurrent_gen() const
 
 void Population::rank_evaluate()
 {
-    // parent rank sort:
-    std::sort(_genome.begin(), _genome.end(), _decreasing_total_comparator);
+    // parent cost sort:
+    std::sort(_genome.begin(), _genome.end(), _increasing_cost_comparator); // sort by cost, then compare with dist
+
     _genome[0]->setRank(1); // leading
     uint64_t leading = 0;
     uint64_t next = 0;
     while (leading + 1 < _genome.size()) {
+        next = 0;
         for (uint64_t i = leading + 1; i < _genome.size(); ++i) {
             if (_genome[leading]->getRank() > _genome[i]->getRank()) { // skip already well assigned rank
                 continue;
             }
-            if (_genome[leading]->time_fitness() > _genome[i]->time_fitness()) {
-                _genome[i]->setRank(_genome[0]->getRank());
+            if (_genome[leading]->dist_fitness() > _genome[i]->dist_fitness()) {
+                _genome[i]->setRank(_genome[leading]->getRank());
                 leading = i; // neccesary? - moves to another solutions with same rank, seems ok
             } else {
-                _genome[i]->setRank(_genome[0]->getRank() + 1);
-                if (next == leading) {
+                _genome[i]->setRank(_genome[leading]->getRank() + 1);
+                if (next == 0) {
                     next = i;
                 }
             }
+        }
+        if (next == 0) {
+            //if (leading + 1 != _genome.size())
+            //    std::cerr << "Should not happen" << std::endl; // I dont understand this, but it works, do not touch
+            break;
         }
         leading = next;
     }
@@ -42,17 +49,25 @@ void Population::rank_evaluate()
 void Population::crowding_distance_evaluate()
 {
     // parent crowding distance evaluate
+
+    //std::sort(_genome.begin(), _genome.end(), _increasing_cost_comparator); // should not be needed
+    std::sort(_genome.begin(), _genome.end(), _increasing_rank_comparator);
+
     // parents are already sorted by rank
     _genome[0]->setCrowding_distance(INFINITY);
     for (uint64_t i = 1; i < _genome.size() - 2; ++i) {
         if (_genome[i]->getRank() != _genome[i+1]->getRank()) {
             _genome[i]->setCrowding_distance(INFINITY);
             _genome[i+1]->setCrowding_distance(INFINITY);
+            // ++i; // no, this could skip another rank layer
         } else {
+            if (_genome[i]->getCrowding_distance() == INFINITY) {
+                continue;
+            }
             float res = 0;
-            res += std::abs(_genome[i]->time_fitness() - _genome[i-1]->time_fitness())
+            res += std::abs(_genome[i]->dist_fitness() - _genome[i-1]->dist_fitness())
                     * std::abs(_genome[i]->cost_fitness() - _genome[i-1]->cost_fitness());
-            res += std::abs(_genome[i]->time_fitness() - _genome[i+1]->time_fitness())
+            res += std::abs(_genome[i]->dist_fitness() - _genome[i+1]->dist_fitness())
                     * std::abs(_genome[i]->cost_fitness() - _genome[i+1]->cost_fitness());
             _genome[i]->setCrowding_distance(res);
         }
@@ -63,7 +78,7 @@ void Population::crowding_distance_evaluate()
 void Population::fitness_testing()
 {
     for (auto &indiv : _genome) {
-        Fitness f = indiv->evaluate_fitness();
+        /*Fitness f = */indiv->evaluate_fitness();
     }
 
     for (auto &indiv : _children) {
@@ -114,7 +129,7 @@ void Population::adult_selection_full_gen_replace()
 //with elitism -> we need at least population of size 2
 void Population::adult_selection_full_gen_replace_mod()
 {
-    std::sort(_genome.begin(), _genome.end(), _decreasing_rank_comparator);
+    std::sort(_genome.begin(), _genome.end(), _increasing_total_comparator);
     for (uint64_t i = 2; i < _genome.size(); ++i) {
         _genome[i] = std::move(_children[i]);
     }
@@ -130,7 +145,7 @@ void Population::adult_selection_over_production()
 
 void Population::adult_selection_over_production_mod()
 {
-    std::sort(_children.begin(), _children.end(), _decreasing_total_comparator); // TODO: can I do this?
+    std::sort(_children.begin(), _children.end(), _increasing_total_comparator); // TODO: can I do this?
     for (uint64_t i = 0; i < _genome.size(); ++i) {
         _genome[i] = std::move(_children[i]);
     }
@@ -154,8 +169,8 @@ void Population::adult_selection_generational_mixing()
 
 void Population::adult_selection_generational_mixing_mod()
 {
-    std::sort(_children.begin(), _children.end(), _decreasing_total_comparator); // TODO: can I do this?
-    std::sort(_genome.begin(), _genome.end(), _decreasing_total_comparator);
+    std::sort(_children.begin(), _children.end(), _increasing_total_comparator); // TODO: can I do this?
+    std::sort(_genome.begin(), _genome.end(), _increasing_total_comparator);
     uint64_t preserve = Settings::inst()->_adult_preserve_count;
     for (uint64_t i = preserve; i < _genome.size(); ++i) {
         _genome[i] = std::move(_children[i-preserve]);
@@ -265,9 +280,47 @@ void Population::print_final_fitness() const
     std::cout << "Fitness avg:" << _current.average << std::endl;*/
 }
 
-void Population::print_final_population() const
+void Population::print_final_population(QCustomPlot *customPlot)
 {
     Settings::inst()->_log << "Final population:" << std::endl;
     std::cout << "Final population:" << std::endl;
-    // TODO
+    fitness_testing();
+
+    QVector<double> cost_pareto, dist_pareto;
+    QVector<double> cost_other, dist_other;
+    for (uint64_t i = 0; i < Settings::inst()->_individual_count; ++i) {
+        std::cout << "c "   << _genome[i]->cost_fitness()
+                  << ", d " << _genome[i]->dist_fitness()
+                  << ", r " << _genome[i]->getRank()
+                  << ", c " << _genome[i]->getCrowding_distance() << std::endl;
+        if (_genome[i]->getRank() == 1) {
+            cost_pareto.push_back(_genome[i]->cost_fitness());
+            dist_pareto.push_back(_genome[i]->dist_fitness());
+        } else {
+            cost_other.push_back(_genome[i]->cost_fitness());
+            dist_other.push_back(_genome[i]->dist_fitness());
+        }
+    }
+    // create graph and assign data to it:
+    customPlot->addGraph();
+    customPlot->graph(0)->setPen(QColor(255, 0, 0, 250)); // red
+    customPlot->graph(0)->setLineStyle(QCPGraph::lsNone);
+    customPlot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
+    customPlot->graph(0)->setName("Cost/dist pareto front");
+    customPlot->graph(0)->setData(cost_pareto, dist_pareto);
+
+    customPlot->addGraph();
+    customPlot->graph(1)->setPen(QColor(0, 0, 0, 250)); // black
+    customPlot->graph(1)->setLineStyle(QCPGraph::lsNone);
+    customPlot->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
+    customPlot->graph(1)->setName("Cost/dist others");
+    customPlot->graph(1)->setData(cost_other, dist_other);
+
+    // give the axes some labels:
+    customPlot->xAxis->setLabel("cost");
+    customPlot->yAxis->setLabel("dist");
+    // set axes ranges, so we see all data:
+    customPlot->xAxis->setRange(0, 3500);
+    customPlot->yAxis->setRange(0, 350000);
+    customPlot->replot();
 }

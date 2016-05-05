@@ -5,24 +5,28 @@ void Evolution::run()
     Stats current;
     if (Settings::inst()->_stop_by_gen) {
         for (uint64_t gen = 0; gen < Settings::inst()->_generations; ++gen) {
-            current = _p.evaluate();
-            update_stats(current);
+            /*current = */_p.evaluate();
+            //update_stats(current);
             _p.log();
         }
     }
     else {
         bool is_fitnes_below = true;
         while (is_fitnes_below) {
-            current = _p.evaluate();
-            update_stats(current);
+            /*current = */_p.evaluate();
+            //update_stats(current);
             is_fitnes_below = (current.max < Settings::inst()->_fitness);
             _p.log();
         }
     }
-    finalize_stats();
+}
+
+void Evolution::output(QCustomPlot *customPlot)
+{
+    //finalize_stats();
     _p.print_final_fitness();
-    print_fitnesses();
-    _p.print_final_population();
+    //print_fitnesses();
+    _p.print_final_population(customPlot);
 }
 
 void Evolution::update_stats(const Stats &current)

@@ -22,6 +22,7 @@ private:
     void print_fitnesses() const;
 public:
     void run();
+    void output(QCustomPlot *customPlot);
     Evolution() : _p() {}
 };
 
