@@ -78,6 +78,70 @@ void Population::crowding_distance_evaluate()
     _genome[_genome.size() - 1]->setCrowding_distance(INFINITY);
 }
 
+void Population::rank_evaluate_children()
+{
+    // parent cost sort:
+    std::sort(_children.begin(), _children.end(), _increasing_cost_comparator); // sort by cost, then compare with dist
+
+    _children[0]->setRank(1); // leading
+    uint64_t leading = 0;
+    uint64_t next = 0;
+    while (leading + 1 < _children.size()) {
+        next = 0;
+        for (uint64_t i = leading + 1; i < _children.size(); ++i) {
+            if (_children[leading]->getRank() > _children[i]->getRank()) { // skip already well assigned rank
+                continue;
+            }
+            if (_children[leading]->dist_fitness() > _children[i]->dist_fitness()) {
+                _children[i]->setRank(_children[leading]->getRank());
+                leading = i; // neccesary? - moves to another solutions with same rank, seems ok
+            } else {
+                _children[i]->setRank(_children[leading]->getRank() + 1);
+                if (next == 0) {
+                    next = i;
+                }
+            }
+        }
+        if (next == 0) {
+            //if (leading + 1 != _children.size())
+            //    std::cerr << "Should not happen" << std::endl; // I dont understand this, but it works, do not touch
+            break;
+        }
+        leading = next;
+    }
+}
+
+void Population::crowding_distance_evaluate_children()
+{
+    // parent crowding distance evaluate
+
+    //std::sort(_children.begin(), _children.end(), _increasing_cost_comparator); // should not be needed
+    //   stable for holding cost sorted -> primary sorted by rank, secondary by cost
+    std::stable_sort(_children.begin(), _children.end(), _increasing_rank_comparator);
+
+    // parents are already sorted by rank
+    _children[0]->setCrowding_distance(INFINITY);
+    for (uint64_t i = 1; i < _children.size() - 1; ++i) {
+        if (_children[i]->getRank() != _children[i+1]->getRank()) {
+            _children[i]->setCrowding_distance(INFINITY);
+            _children[i+1]->setCrowding_distance(INFINITY);
+            // ++i; // no, this could skip another rank layer
+        } else {
+            if (_children[i]->getCrowding_distance() == INFINITY) {
+                continue;
+            }
+            float res = 0;
+            res += std::abs(_children[i]->dist_fitness() - _children[i-1]->dist_fitness())
+                    * std::abs(_children[i]->cost_fitness() - _children[i-1]->cost_fitness());
+            res += std::abs(_children[i]->dist_fitness() - _children[i+1]->dist_fitness())
+                    * std::abs(_children[i]->cost_fitness() - _children[i+1]->cost_fitness());
+
+            _children[i]->setCrowding_distance(res);
+        }
+    }
+    _children[_children.size() - 1]->setCrowding_distance(INFINITY);
+}
+
 void Population::fitness_testing()
 {
     for (auto &indiv : _genome) {
@@ -91,6 +155,12 @@ void Population::fitness_testing()
     // eval parents
     rank_evaluate();
     crowding_distance_evaluate();
+
+    // eval children
+    if (_current_gen > 1) {
+        rank_evaluate_children();
+        crowding_distance_evaluate_children();
+    }
 }
 
 void Population::adult_selection()
@@ -132,8 +202,8 @@ void Population::adult_selection_full_gen_replace()
 //with elitism -> we need at least population of size 2
 void Population::adult_selection_full_gen_replace_mod()
 {
-    std::sort(_genome.begin(), _genome.end(), _increasing_total_comparator);
-    for (uint64_t i = 2; i < _genome.size(); ++i) {
+    std::sort(_genome.begin(), _genome.end(), _best_first_comparator);
+    for (uint64_t i = 2; i < _genome.size(); ++i) { // keep 2 best individuals
         _genome[i] = std::move(_children[i]);
     }
 }
@@ -148,7 +218,7 @@ void Population::adult_selection_over_production()
 
 void Population::adult_selection_over_production_mod()
 {
-    std::sort(_children.begin(), _children.end(), _increasing_total_comparator); // TODO: can I do this?
+    std::sort(_children.begin(), _children.end(), _best_first_comparator); // TODO: can I do this?
     for (uint64_t i = 0; i < _genome.size(); ++i) {
         _genome[i] = std::move(_children[i]);
     }
@@ -172,8 +242,8 @@ void Population::adult_selection_generational_mixing()
 
 void Population::adult_selection_generational_mixing_mod()
 {
-    std::sort(_children.begin(), _children.end(), _increasing_total_comparator); // TODO: can I do this?
-    std::sort(_genome.begin(), _genome.end(), _increasing_total_comparator);
+    std::sort(_children.begin(), _children.end(), _best_first_comparator); // TODO: can I do this?
+    std::sort(_genome.begin(), _genome.end(), _best_first_comparator);
     uint64_t preserve = Settings::inst()->_adult_preserve_count;
     for (uint64_t i = preserve; i < _genome.size(); ++i) {
         _genome[i] = std::move(_children[i-preserve]);
@@ -186,7 +256,7 @@ void Population::adult_selection_deterministic_mixing()
         _genome.push_back(std::move(_children[i]));
     }
 
-    std::sort(_genome.begin(), _genome.end(), _decreasing_total_comparator);
+    std::sort(_genome.begin(), _genome.end(), _best_first_comparator);
 
     while (_genome.size() > Settings::inst()->_individual_count) {
         _genome.pop_back();
@@ -205,9 +275,9 @@ void Population::parent_selection()
         // to tournament is nominated_tournament_k individuals, the best is choosed as parent
         for (uint64_t j = 0; j < Settings::inst()->_tournament_k; ++j) {
             uint64_t alt = rnd_int(Settings::inst()->_randomness_source);
-            if ( _genome[alt]->getRank() > _genome[par]->getRank()
-                    || (_genome[alt]->getRank() == _genome[par]->getRank()
-                        && _genome[alt]->getCrowding_distance() > _genome[par]->getCrowding_distance()) )
+            if ( _genome[alt]->getRank() < _genome[par]->getRank() // lower rank is better
+                    || (_genome[alt]->getRank() == _genome[par]->getRank() // or in case of same rank
+                        && _genome[alt]->getCrowding_distance() > _genome[par]->getCrowding_distance()) ) // higher CD is better
                 par = alt;
         }
 
@@ -306,24 +376,24 @@ void Population::print_final_population(QCustomPlot *customPlot)
     }
     // create graph and assign data to it:
     customPlot->addGraph();
-    customPlot->graph(0)->setPen(QColor(255, 0, 0, 250)); // red
+    customPlot->graph(0)->setPen(QColor(0, 0, 0, 250)); // black
     customPlot->graph(0)->setLineStyle(QCPGraph::lsNone);
     customPlot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
-    customPlot->graph(0)->setName("Cost/dist pareto front");
-    customPlot->graph(0)->setData(cost_pareto, dist_pareto);
+    customPlot->graph(0)->setName("Cost/dist others");
+    customPlot->graph(0)->setData(dist_other, cost_other);
 
     customPlot->addGraph();
-    customPlot->graph(1)->setPen(QColor(0, 0, 0, 250)); // black
+    customPlot->graph(1)->setPen(QColor(255, 0, 0, 250)); // red
     customPlot->graph(1)->setLineStyle(QCPGraph::lsNone);
     customPlot->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
-    customPlot->graph(1)->setName("Cost/dist others");
-    customPlot->graph(1)->setData(cost_other, dist_other);
+    customPlot->graph(1)->setName("Cost/dist pareto front");
+    customPlot->graph(1)->setData(dist_pareto, cost_pareto);
 
     // give the axes some labels:
-    customPlot->xAxis->setLabel("cost");
-    customPlot->yAxis->setLabel("dist");
+    customPlot->xAxis->setLabel("dist");
+    customPlot->yAxis->setLabel("cost");
     // set axes ranges, so we see all data:
-    customPlot->xAxis->setRange(0, 3500);
-    customPlot->yAxis->setRange(0, 350000);
+    customPlot->xAxis->setRange(0, 35000);
+    customPlot->yAxis->setRange(0, 350);
     customPlot->replot();
 }

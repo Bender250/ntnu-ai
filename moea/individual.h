@@ -20,7 +20,7 @@ static const Values v;
 class Individual
 {
 private:
-    std::array<City, LENGTH> _genome;
+    std::array<City, LENGTH> _genotype;
     Fitness _fitness;
     uint64_t _rank;
     float _crowding_distance;
@@ -28,15 +28,12 @@ private:
 public:
     Individual() : _fitness({0, 0}), _rank(0xFFFFFFFFFFFFFFFF), _crowding_distance(0) {
         for (uint64_t i = 0; i < LENGTH; ++i) {
-            _genome[i] = i;
+            _genotype[i] = i;
         }
-        std::shuffle(_genome.begin(), _genome.end(), Settings::inst()->_randomness_source);
+        std::shuffle(_genotype.begin(), _genotype.end(), Settings::inst()->_randomness_source);
     }
-    Individual(std::array<City, LENGTH> genome) : _genome(genome), _fitness({0, 0}), _rank(0xFFFFFFFFFFFFFFFF), _crowding_distance(0) {
-        for (uint64_t i = 0; i < LENGTH; ++i) {
-            _genome[i] = i;
-        }
-        std::shuffle(_genome.begin(), _genome.end(), Settings::inst()->_randomness_source);
+    Individual(std::array<City, LENGTH> genome) : _genotype(genome), _fitness({0, 0}), _rank(0xFFFFFFFFFFFFFFFF), _crowding_distance(0) {
+        // _genotype is already set!
     }
 
     Fitness evaluate_fitness();
@@ -66,7 +63,7 @@ public:
         _crowding_distance = crowding_distance;
     }
     std::array<City, LENGTH> getGenome() const {
-        return _genome;
+        return _genotype;
     }
 };
 

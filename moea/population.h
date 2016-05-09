@@ -73,30 +73,32 @@ private:
     struct {
         bool operator ()(std::unique_ptr<Individual> const &a, std::unique_ptr<Individual> const &b) {
             if (a->getRank() == b->getRank()) {
-                return a->getCrowding_distance() > b->getCrowding_distance();
+                return a->getCrowding_distance() < b->getCrowding_distance();
             } else {
                 return a->getRank() > b->getRank();
             }
         }
-    } _decreasing_total_comparator;
+    } _worst_first_comparator;
     struct {
         bool operator ()(std::unique_ptr<Individual> const &a, std::unique_ptr<Individual> const &b) {
             if (a->getRank() == b->getRank()) {
-                return a->getCrowding_distance() < b->getCrowding_distance();
+                return a->getCrowding_distance() > b->getCrowding_distance();
             } else {
                 return a->getRank() < b->getRank();
             }
         }
-    } _increasing_total_comparator;
+    } _best_first_comparator;
 
     void adult_selection_full_gen_replace_mod();
     void adult_selection_over_production_mod();
     void adult_selection_generational_mixing_mod();
     uint64_t get_best_id() const;
+
     void rank_evaluate();
+    void rank_evaluate_children();
 
     void crowding_distance_evaluate();
-
+    void crowding_distance_evaluate_children();
 public:
     Population(); //generate initial population
     uint64_t getCurrent_gen() const;
