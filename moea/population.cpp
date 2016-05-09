@@ -312,6 +312,10 @@ void Population::reproduction()
         while (mutate(Settings::inst()->_randomness_source)) {
             offspring->mutate();
         }
+        // debug
+        if (!offspring->is_valid()) {
+            std::cerr << "Invalid reproduction! Gen: " << _current_gen << std::endl;
+        }
         _children.push_back(move(offspring));
     }
 }
@@ -369,6 +373,7 @@ void Population::print_final_population(QCustomPlot *customPlot)
         if (_genome[i]->getRank() == 1) {
             cost_pareto.push_back(_genome[i]->cost_fitness());
             dist_pareto.push_back(_genome[i]->dist_fitness());
+            _genome[i]->print_genome();
         } else {
             cost_other.push_back(_genome[i]->cost_fitness());
             dist_other.push_back(_genome[i]->dist_fitness());
@@ -393,7 +398,7 @@ void Population::print_final_population(QCustomPlot *customPlot)
     customPlot->xAxis->setLabel("dist");
     customPlot->yAxis->setLabel("cost");
     // set axes ranges, so we see all data:
-    customPlot->xAxis->setRange(0, 35000);
-    customPlot->yAxis->setRange(0, 350);
+    customPlot->xAxis->setRange(0, 350000);
+    customPlot->yAxis->setRange(0, 3500);
     customPlot->replot();
 }

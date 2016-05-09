@@ -19,7 +19,7 @@ Fitness Individual::evaluate_fitness()
 
 void Individual::mutate()
 {
-    std::uniform_int_distribution<uint64_t> rnd_int(0, _genotype.size());
+    std::uniform_int_distribution<uint64_t> rnd_int(0, _genotype.size() - 1);
     std::swap(_genotype[rnd_int(Settings::inst()->_randomness_source)],
               _genotype[rnd_int(Settings::inst()->_randomness_source)]);
 }
@@ -28,7 +28,7 @@ std::unique_ptr<Individual> Individual::cross_over(const std::unique_ptr<Individ
 {
     uint64_t position = _genotype.size()/2;
     if (Settings::inst()->_crossover_position_random) {
-        std::uniform_int_distribution<uint64_t> rnd_int(0, _genotype.size());
+        std::uniform_int_distribution<uint64_t> rnd_int(0, _genotype.size() - 1);
         position = rnd_int(Settings::inst()->_randomness_source);
     }
 

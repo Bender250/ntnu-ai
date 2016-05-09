@@ -9,13 +9,13 @@
 
 #include "settings.h"
 
-using City = unsigned char;
+using City = uint8_t;
 
 struct Fitness {
     float dist, cost;
 };
 
-static const Values v;
+static const Values v = Values();
 
 class Individual
 {
@@ -40,6 +40,32 @@ public:
     void mutate();
     std::unique_ptr<Individual> cross_over(const std::unique_ptr<Individual> &in) const;
     std::unique_ptr<Individual> get_copy() const;
+
+    bool is_valid() const {
+        std::array<bool, LENGTH> used = { {false} };
+        for (City const &c : _genotype) {
+            if (c > LENGTH) {
+                std::cerr << "City index over 48: " << c << std::endl;
+                exit(1);
+            }
+            used[c] = true; // I can check here, if it is not set...
+        }
+
+        bool ret = true;
+        for (bool const &b : used) {
+            ret &= b;
+        }
+
+        return ret;
+    }
+
+    void print_genome() const {
+        std::cout << "Cities: ";
+        for (City const &c : _genotype) {
+            std::cout << (int) c << ", ";
+        }
+        std::cout << std::endl;
+    }
 
     float dist_fitness() const {
         return _fitness.dist;
