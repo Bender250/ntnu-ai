@@ -1,5 +1,5 @@
 #include "population.h"
-
+#include <sstream>
 
 Population::Population() : _current_gen(0)
 {
@@ -379,20 +379,29 @@ void Population::print_final_population(QCustomPlot *customPlot)
             dist_other.push_back(_genome[i]->dist_fitness());
         }
     }
-    // create graph and assign data to it:
-    customPlot->addGraph();
-    customPlot->graph(0)->setPen(QColor(0, 0, 0, 250)); // black
-    customPlot->graph(0)->setLineStyle(QCPGraph::lsNone);
-    customPlot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
-    customPlot->graph(0)->setName("Cost/dist others");
-    customPlot->graph(0)->setData(dist_other, cost_other);
+    if (_plot_type) {
+        // create graph and assign data to it:
+        customPlot->addGraph();
+        customPlot->graph(0)->setPen(QColor(0, 0, 0, 250)); // black
+        customPlot->graph(0)->setLineStyle(QCPGraph::lsNone);
+        customPlot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
+        customPlot->graph(0)->setName("Cost/dist others");
+        customPlot->graph(0)->setData(dist_other, cost_other);
 
-    customPlot->addGraph();
-    customPlot->graph(1)->setPen(QColor(255, 0, 0, 250)); // red
-    customPlot->graph(1)->setLineStyle(QCPGraph::lsNone);
-    customPlot->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
-    customPlot->graph(1)->setName("Cost/dist pareto front");
-    customPlot->graph(1)->setData(dist_pareto, cost_pareto);
+        customPlot->addGraph();
+        customPlot->graph(1)->setPen(QColor(255, 0, 0, 250)); // red
+        customPlot->graph(1)->setLineStyle(QCPGraph::lsNone);
+        customPlot->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
+        customPlot->graph(1)->setName("Cost/dist pareto front");
+        customPlot->graph(1)->setData(dist_pareto, cost_pareto);
+    } else {
+        customPlot->addGraph();
+        customPlot->graph(0)->setPen(QColor(255, 0, 0, 250)); // red
+        customPlot->graph(0)->setLineStyle(QCPGraph::lsNone);
+        customPlot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
+        customPlot->graph(0)->setName("Cost/dist pareto front");
+        customPlot->graph(0)->setData(dist_pareto, cost_pareto);
+    }
 
     // give the axes some labels:
     customPlot->xAxis->setLabel("dist");
@@ -400,5 +409,30 @@ void Population::print_final_population(QCustomPlot *customPlot)
     // set axes ranges, so we see all data:
     customPlot->xAxis->setRange(0, 350000);
     customPlot->yAxis->setRange(0, 3500);
+    // print extreme coordinates
+    customPlot->xAxis->setAutoTicks(false);
+    customPlot->xAxis->setAutoTickLabels(false);
+    QVector<QString> x_labels = {"0", "80000", "120000", "160000", "200000", "240000", "280000", "320000"};
+    x_labels.push_back(QString::number(*std::min_element(dist_pareto.begin(), dist_pareto.end())));
+    customPlot->xAxis->setTickVectorLabels(x_labels);
+    QVector<double> x_ticks = {0, 80000, 120000, 160000, 200000, 240000, 280000, 320000};
+    x_ticks.push_back((*std::min_element(dist_pareto.begin(), dist_pareto.end())));
+    customPlot->xAxis->setTickVector(x_ticks);
+
+    customPlot->yAxis->setAutoTicks(false);
+    customPlot->yAxis->setAutoTickLabels(false);
+    QVector<QString> y_labels = {"0", "1200", "1600", "2000", "2400", "2800", "3200"};
+    y_labels.push_back(QString::number(*std::min_element(cost_pareto.begin(), cost_pareto.end())));
+    customPlot->yAxis->setTickVectorLabels(y_labels);
+    QVector<double> y_ticks = {0, 1200, 1600, 2000, 2400, 2800, 3200};
+    y_ticks.push_back((*std::min_element(cost_pareto.begin(), cost_pareto.end())));
+    customPlot->yAxis->setTickVector(y_ticks);
+
+
+    //customPlot->xAxis->pixelToCoord(*std::min_element(dist_pareto.begin(), dist_pareto.end()));
+    //customPlot->yAxis->pixelToCoord(*std::min_element(cost_pareto.begin(), cost_pareto.end()));
+    // plot it
     customPlot->replot();
+    // change plot type for future
+    _plot_type = !_plot_type;
 }

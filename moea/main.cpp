@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     Settings::inst()->_log.close();
 
     QApplication a(argc, argv);
-    MainWindow w(e);
+    MainWindow w(&e);
     w.show();
 
     return a.exec();

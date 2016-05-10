@@ -37,9 +37,12 @@ std::unique_ptr<Individual> Individual::cross_over(const std::unique_ptr<Individ
     uint64_t j = position;
 
     for (uint64_t i = 0; i < _genotype.size(); ++i) {
-        if (std::find(new_indiv.begin(), new_indiv.begin() + position, in->getGenome()[i])
-                == new_indiv.begin() + position) {
+        auto first = new_indiv.begin();
+        auto last  = new_indiv.begin() + position;
+        auto found = std::find(first, last, in->getGenome()[i]);
+        if (found == last) {
             new_indiv[j] = in->getGenome()[i];
+            ++j;
         }
     }
 

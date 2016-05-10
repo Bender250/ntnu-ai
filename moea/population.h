@@ -23,6 +23,8 @@ private:
 
     uint64_t _current_gen = 0;
 
+    bool _plot_type = true;
+
     void fitness_testing();
     void adult_selection();
     void adult_selection_deterministic_mixing();
