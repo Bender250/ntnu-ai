@@ -1,10 +1,7 @@
 {
-    "//" : "1 = One-Max Problem, 2 = LOLZ Prefix Problem, 3 = Surprising Sequences",
-    "project" : 3,
-
     "population" : {
-        "size" : 200,
-        "parent_count" : 80
+        "size" : 400,
+        "parent_count" : 160
     },
 
     "evolution" : {
@@ -19,14 +16,14 @@
         "//" : "strategies: full gen replacement = 1, over production = 2, generational mixing = 3, 4,5,6 = previous strategies with elitism",
         "adult_sel_strat" : 4,
         "adult_sel_strat_settings" : {
-            "children_count" : 200,
-            "adult_preserve_count" : 10, "//" : "appliable in case of generational mixing"
+            "children_count" : 400,
+            "adult_preserve_count" : 20, "//" : "appliable in case of generational mixing"
         },
 
         "parent_sel_strat_settings" : {
-            "tournament_k" : 10
+            "tournament_k" : 40
         }
     },
 
-    "seed" : 12
+    "seed" : 8
 }

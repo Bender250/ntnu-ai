@@ -312,10 +312,10 @@ void Population::reproduction()
         while (mutate(Settings::inst()->_randomness_source)) {
             offspring->mutate();
         }
-        // debug
+        /*// debug
         if (!offspring->is_valid()) {
             std::cerr << "Invalid reproduction! Gen: " << _current_gen << std::endl;
-        }
+        }*/
         _children.push_back(move(offspring));
     }
 }
@@ -379,6 +379,8 @@ void Population::print_final_population(QCustomPlot *customPlot)
             dist_other.push_back(_genome[i]->dist_fitness());
         }
     }
+
+    std::cout << "Pareto front size: " << cost_pareto.size() << std::endl;
     if (_plot_type) {
         // create graph and assign data to it:
         customPlot->addGraph();
